@@ -1,0 +1,17 @@
+# Judge score fusion (spec §6). Weights must sum to 1.0.
+# score = F*fundamentals + Q*quant + C*chart + S*sentiment + N*news + D*(100 - devils_advocate_risk)
+weights:
+  fundamentals: 0.20
+  quant: 0.15
+  chart: 0.20
+  sentiment: 0.15
+  news: 0.10
+  devils_advocate: 0.20   # applied to (100 - risk score)
+
+labels:                   # renamed from the spec's original labels
+  - {min: 70, label: "STRONG POSITIVE SIGNALS"}
+  - {min: 45, label: "MIXED"}
+  - {min: 0,  label: "WEAK SIGNALS"}
+
+alert_delta: 10           # score change vs previous verdict that raises an alert
+disclaimer: "Analysis for education only. Not investment advice."

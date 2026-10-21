@@ -13,9 +13,7 @@ def _score(meta: dict, distance: float, agent: str) -> float:
     score = distance
     if meta.get("secondary_source"):
         score *= SECONDARY_PENALTY
-    if agent == "devils_advocate" and (
-        meta.get("collection") == "contrarian" or meta.get("school") == "contrarian"
-    ):
+    if agent == "devils_advocate" and meta.get("collection") == "contrarian":
         score *= CONTRARIAN_BOOST
     return score
 

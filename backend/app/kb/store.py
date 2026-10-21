@@ -21,15 +21,15 @@ MODEL_NAME = "sentence-transformers/all-MiniLM-L6-v2"
 CHUNK_TOKENS = 240
 CHUNK_OVERLAP = 50
 
-COLLECTIONS = ["value", "growth", "technical", "macro", "risk", "contrarian"]
+COLLECTIONS = ["fundamentals", "quant", "chart", "sentiment", "news", "contrarian"]
 
+# Each agent reads only its own collection; devils_advocate audits all six.
 AGENT_SCOPE: dict[str, list[str]] = {
-    "value_analyst": ["value"],
-    "growth_analyst": ["growth"],
-    "technical_analyst": ["technical"],
-    "macro_analyst": ["macro"],
-    "risk_manager": ["risk"],
-    "contrarian": ["contrarian"],
+    "fundamentals": ["fundamentals"],
+    "quant": ["quant"],
+    "chart": ["chart"],
+    "sentiment": ["sentiment"],
+    "news": ["news"],
     "devils_advocate": list(COLLECTIONS),
 }
 

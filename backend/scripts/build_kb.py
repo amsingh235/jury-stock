@@ -66,7 +66,7 @@ LOADERS = {".md": load_text_file, ".txt": load_text_file, ".pdf": load_pdf}
 def clean_meta(meta: dict, collection: str, source: Path, idx: int) -> dict:
     """Coerce metadata to Chroma-safe scalar values and add provenance fields."""
     out = {k: v if isinstance(v, (str, int, float, bool)) else str(v) for k, v in meta.items()}
-    out.update(collection=collection, source=source.name, chunk=idx)
+    out.update(collection=collection, agent=collection, source=source.name, chunk=idx)
     out.setdefault("author", "Unknown")
     out["year"] = str(out.get("year", "n.d."))
     return out

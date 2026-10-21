@@ -1,0 +1,8 @@
+# SCREEN mode filters (spec §7.1). Deterministic, no LLM cost.
+max_price_inr: 200
+min_market_cap_cr: 300
+min_avg_daily_volume: 100000
+min_listed_years: 1
+lookback_days_volume: 60
+top_n: 50
+rank_weights: {liquidity: 0.5, fundamentals: 0.5}

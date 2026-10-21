@@ -10,13 +10,12 @@ from backend.app.kb.retriever import retrieve  # noqa: E402
 from backend.app.kb.store import AGENT_SCOPE  # noqa: E402
 
 QUERIES = {
-    "value_analyst": "margin of safety and intrinsic value",
-    "growth_analyst": "revenue growth and competitive moat",
-    "technical_analyst": "moving averages and price momentum",
-    "macro_analyst": "interest rates and the business cycle",
-    "risk_manager": "position sizing and drawdown control",
-    "contrarian": "buying when others are fearful",
-    "devils_advocate": "why the bullish thesis could be wrong",
+    "fundamentals": "is this business cheap relative to its earnings quality",
+    "quant": "12-1 month momentum and short-term reversal",
+    "chart": "head and shoulders failure rate and volume confirmation",
+    "sentiment": "extreme retail attention and media pessimism",
+    "news": "post earnings announcement drift after a surprise",
+    "devils_advocate": "why the bullish consensus could be wrong",
 }
 
 
