@@ -49,7 +49,8 @@ def test_retrieval_respects_scope(built_kb):
 def test_chunk_windows_overlap():
     """Long text splits into 240-token windows that overlap by 50 tokens."""
     tok = store.get_model().tokenizer
-    text = " ".join(f"word{i}" for i in range(400))
+    words = ["stock", "market", "price", "value", "growth", "risk", "cash", "debt"]
+    text = " ".join(words[i % len(words)] for i in range(400))  # one token per word
     chunks = store.chunk_text(text)
     lens = [len(tok.encode(c, add_special_tokens=False)) for c in chunks]
     assert len(chunks) > 1 and max(lens) <= store.CHUNK_TOKENS
