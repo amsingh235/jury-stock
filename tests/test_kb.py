@@ -44,3 +44,15 @@ def test_retrieval_respects_scope(built_kb):
 
     results = run(k=3)
     assert set(results) == set(store.AGENT_SCOPE)
+
+
+def test_chunk_windows_overlap():
+    """Long text splits into 240-token windows that overlap by 50 tokens."""
+    tok = store.get_model().tokenizer
+    text = " ".join(f"word{i}" for i in range(400))
+    chunks = store.chunk_text(text)
+    lens = [len(tok.encode(c, add_special_tokens=False)) for c in chunks]
+    assert len(chunks) > 1 and max(lens) <= store.CHUNK_TOKENS
+    tail = tok.encode(chunks[0], add_special_tokens=False)[-store.CHUNK_OVERLAP:]
+    head = tok.encode(chunks[1], add_special_tokens=False)[:store.CHUNK_OVERLAP]
+    assert tail == head
