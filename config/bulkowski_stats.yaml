@@ -1,0 +1,92 @@
+# Reference statistics attached to each detected pattern (spec §5).
+#
+# WARNING: every figure below is an APPROXIMATE PLACEHOLDER written from memory of
+# Bulkowski's Encyclopedia of Chart Patterns (2nd ed., 2005) and thepatternsite.com
+# summaries. None has been checked against the source, so all carry verified: false.
+# Replace each with the published number (daily data, bull market, breakout in the
+# pattern's direction) and set verified: true. Agents are told to flag unverified stats.
+#
+# failure_rate_pct: share of patterns failing to move 10% after breakout (Bulkowski's
+#                   "10% failure rate"); avg_move_pct: average move after breakout;
+# frequency_rank:   Bulkowski performance rank out of ~39 bull-market patterns (lower is better).
+patterns:
+  head_shoulders_top:
+    name: Head-and-shoulders top
+    direction: bearish
+    failure_rate_pct: 19
+    avg_move_pct: -16
+    frequency_rank: 1
+    source: "Bulkowski (2005), Encyclopedia of Chart Patterns"
+    verified: false
+  head_shoulders_bottom:
+    name: Head-and-shoulders bottom (inverse)
+    direction: bullish
+    failure_rate_pct: 11
+    avg_move_pct: 38
+    frequency_rank: 2
+    source: "Bulkowski (2005), Encyclopedia of Chart Patterns"
+    verified: false
+  double_top:
+    name: Double top (Eve & Eve)
+    direction: bearish
+    failure_rate_pct: 17
+    avg_move_pct: -15
+    frequency_rank: 4
+    source: "Bulkowski (2005), Encyclopedia of Chart Patterns"
+    verified: false
+  double_bottom:
+    name: Double bottom (Adam & Adam)
+    direction: bullish
+    failure_rate_pct: 16
+    avg_move_pct: 35
+    frequency_rank: 12
+    source: "Bulkowski (2005), Encyclopedia of Chart Patterns"
+    verified: false
+  ascending_triangle:
+    name: Ascending triangle
+    direction: bullish
+    failure_rate_pct: 13
+    avg_move_pct: 35
+    frequency_rank: 12
+    source: "Bulkowski (2005), Encyclopedia of Chart Patterns"
+    verified: false
+  descending_triangle:
+    name: Descending triangle
+    direction: bearish
+    failure_rate_pct: 16
+    avg_move_pct: -16
+    frequency_rank: 14
+    source: "Bulkowski (2005), Encyclopedia of Chart Patterns"
+    verified: false
+  symmetrical_triangle:
+    name: Symmetrical triangle
+    direction: neutral
+    failure_rate_pct: 12
+    avg_move_pct: 31
+    frequency_rank: 22
+    source: "Bulkowski (2005), Encyclopedia of Chart Patterns"
+    verified: false
+  bull_flag:
+    name: Flag (bullish)
+    direction: bullish
+    failure_rate_pct: 12
+    avg_move_pct: 23
+    frequency_rank: 28
+    source: "Bulkowski (2005), Encyclopedia of Chart Patterns"
+    verified: false
+  bear_flag:
+    name: Flag (bearish)
+    direction: bearish
+    failure_rate_pct: 24
+    avg_move_pct: -12
+    frequency_rank: 30
+    source: "Bulkowski (2005), Encyclopedia of Chart Patterns"
+    verified: false
+  cup_with_handle:
+    name: Cup with handle
+    direction: bullish
+    failure_rate_pct: 14
+    avg_move_pct: 34
+    frequency_rank: 18
+    source: "Bulkowski (2005), Encyclopedia of Chart Patterns"
+    verified: false
