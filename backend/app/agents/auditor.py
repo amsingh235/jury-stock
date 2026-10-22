@@ -88,6 +88,12 @@ def _matches(v: float, pool: list[float], rel: float = 0.015) -> bool:
     return False
 
 
+def _surname(author: str) -> str:
+    """First author's surname, lowercased: 'Moskowitz, Ooi and Pedersen' -> 'moskowitz'."""
+    m = re.match(r"[A-Za-z'\-]+", author.strip())
+    return m.group(0).lower() if m else ""
+
+
 def audit(output: dict, inputs: dict, retrieved: list[dict], research_text: str = "") -> dict:
     """Return unsourced numbers and unverified citations for one agent output."""
     pool = _numbers_in(inputs) + _numbers_in(research_text)
@@ -102,7 +108,7 @@ def audit(output: dict, inputs: dict, retrieved: list[dict], research_text: str 
             if not _matches(v, pool):
                 unsourced.append(tok)
 
-    known = {(str(r.get("author") or "").split()[0].lower(), str(r.get("year"))) for r in retrieved if r.get("author")}
+    known = {(_surname(r["author"]), str(r.get("year"))) for r in retrieved if r.get("author")}
     cited = set()
     for text in _prose(output):
         cited |= {(a.lower(), y) for a, y in CITE_RX.findall(text)}

@@ -204,3 +204,12 @@ def test_catalysts_only_future_scheduled():
               {"kind": "rumor", "date": "2026-11-01", "description": "talk", "source": "x"}]
     cats = news.get_catalysts({}, events, today=today)
     assert [c["catalyst"] for c in cats] == ["earnings"] and cats[0]["days_until"] == 19
+
+
+def test_auditor_handles_multi_author_strings():
+    """Retrieved authors like 'Moskowitz, Ooi and Pedersen' match a (Moskowitz, 2012) citation."""
+    from backend.app.agents import auditor
+
+    retrieved = [{"author": "Moskowitz, Ooi and Pedersen", "year": "2012"}, {"author": "Stickel; Gleason and Lee", "year": "2003"}]
+    out = {"reasoning": "Trend persists (Moskowitz, 2012); revisions drift (Stickel, 2003).", "citations": []}
+    assert auditor.audit(out, {}, retrieved)["unverified_citations"] == []

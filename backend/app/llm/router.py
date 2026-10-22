@@ -4,6 +4,8 @@ from __future__ import annotations
 import json
 import os
 import re
+import shutil
+import subprocess
 import time
 from dataclasses import dataclass, field
 from pathlib import Path
@@ -82,6 +84,33 @@ def _gemini_call(cfg: dict, p: dict, key: str) -> Callable[[str, str], str]:
     return call
 
 
+def claude_cli_call(model: str = "opus", timeout_s: int = 300) -> Callable[[str, str], str]:
+    """Build a caller that runs one headless Claude Code turn on the user's Claude subscription.
+
+    Tools and MCP servers are disabled, so the model can only answer; the user prompt goes
+    through stdin to stay clear of Windows command-line length limits.
+    """
+    exe = shutil.which("claude")
+    if not exe:
+        raise LLMError("Claude Code CLI not found: install it and run `claude` once to log in")
+
+    def call(system: str, user: str) -> str:
+        """Run `claude -p` and return the reply text."""
+        proc = subprocess.run(
+            [exe, "-p", "--model", model, "--output-format", "json", "--tools", "",
+             "--system-prompt", system, "--no-session-persistence", "--strict-mcp-config"],
+            input=user, capture_output=True, text=True, encoding="utf-8", timeout=timeout_s,
+        )
+        try:
+            out = json.loads(proc.stdout)
+        except json.JSONDecodeError:
+            raise LLMError(f"claude CLI exit {proc.returncode}: {(proc.stderr or proc.stdout)[:300]}")
+        if out.get("is_error"):
+            raise LLMError(f"claude CLI error: {out.get('subtype')} {str(out.get('result'))[:300]}")
+        return out["result"]
+    return call
+
+
 BUILDERS = {"groq": _groq_call, "gemini": _gemini_call}
 
 
@@ -93,6 +122,12 @@ class Router:
     retries: int = 2
     backoff_s: float = 2.0
     log: list[dict] = field(default_factory=list)
+
+    @classmethod
+    def opus(cls) -> "Router":
+        """Router that sends every agent call to Opus via the Claude Code CLI (subscription)."""
+        cfg = yaml.safe_load(CONFIG_PATH.read_text(encoding="utf-8"))["claude_cli"]
+        return cls([Provider("claude_cli", cfg["model"], claude_cli_call(cfg["model"], cfg["timeout_s"]))], retries=2)
 
     @classmethod
     def from_config(cls) -> "Router":
@@ -128,7 +163,7 @@ class Router:
                     if e.response.status_code in (400, 401, 403, 404):
                         break  # configuration problem; retrying won't help
                     time.sleep(self.backoff_s * 2 ** attempt)
-                except (httpx.HTTPError, KeyError, IndexError) as e:
+                except (httpx.HTTPError, KeyError, IndexError, LLMError, subprocess.TimeoutExpired) as e:
                     errors.append(f"{prov.name}: {type(e).__name__}: {e}")
                     time.sleep(self.backoff_s * 2 ** attempt)
                 self.log.append({"provider": prov.name, "ok": False, "s": round(time.time() - t0, 2)})

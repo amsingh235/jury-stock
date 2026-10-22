@@ -7,12 +7,16 @@ AGENT_SCOPE maps each agent to the collections it is allowed to read.
 from __future__ import annotations
 
 import os
+import threading
 from functools import lru_cache
 from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parents[3]
 RAW_DIR = REPO_ROOT / "knowledge" / "raw"
 DEFAULT_DB_DIR = REPO_ROOT / "knowledge" / "chroma"
+
+# Chroma client creation and model loading are not thread-safe; agents run in parallel.
+_LOCK = threading.RLock()
 
 COLLECTION_NAME = "jury_kb"
 MODEL_NAME = "sentence-transformers/all-MiniLM-L6-v2"
@@ -44,7 +48,8 @@ def get_model():
     """Load the MiniLM sentence-transformer once and cache it for the process."""
     from sentence_transformers import SentenceTransformer
 
-    return SentenceTransformer(MODEL_NAME)
+    with _LOCK:
+        return SentenceTransformer(MODEL_NAME)
 
 
 @lru_cache(maxsize=4)
@@ -59,14 +64,17 @@ def get_collection():
     """Return (creating if needed) the cosine-distance ``jury_kb`` collection."""
     path = db_dir()
     path.mkdir(parents=True, exist_ok=True)
-    return _client(str(path)).get_or_create_collection(
-        COLLECTION_NAME, metadata={"hnsw:space": "cosine"}
-    )
+    with _LOCK:
+        return _client(str(path)).get_or_create_collection(
+            COLLECTION_NAME, metadata={"hnsw:space": "cosine"}
+        )
 
 
 def embed(texts: list[str]) -> list[list[float]]:
     """Embed texts with the cached MiniLM model (L2-normalised)."""
-    vecs = get_model().encode(texts, normalize_embeddings=True, show_progress_bar=False)
+    model = get_model()
+    with _LOCK:
+        vecs = model.encode(texts, normalize_embeddings=True, show_progress_bar=False)
     return vecs.tolist()
 
 

@@ -8,6 +8,13 @@ providers:
     model: gemini-2.5-flash
     api_key_env: GEMINI_API_KEY
     url: https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent
+# Opus via your Claude subscription, through the Claude Code CLI (`claude -p`). No API key:
+# it uses the account you're logged into with `claude`. Only used when you ask for it
+# (run_jury.py --llm opus), never in the daily 50-stock run (spec §11).
+claude_cli:
+  model: opus
+  timeout_s: 300
+
 temperature: 0.2
 max_output_tokens: 1800
 timeout_s: 60

@@ -148,7 +148,11 @@ def run_agent(key: str, ctx: dict, router: Router) -> dict:
     """Run one agent end to end; returns a transcript record (never raises on LLM failure)."""
     spec = AGENTS[key]
     t0 = time.time()
-    hits = retrieve(key, spec.query(ctx), k=spec.k)
+    try:
+        hits = retrieve(key, spec.query(ctx), k=spec.k)
+    except Exception as e:  # a KB failure must not sink the other agents
+        return {"agent": key, "retrieved": [], "status": "ERROR", "seconds": round(time.time() - t0, 2),
+                "error": f"knowledge base retrieval failed: {type(e).__name__}: {e}"}
     record = {
         "agent": key,
         "retrieved": [{"title": h["metadata"].get("title"), "author": h["metadata"].get("author"),
