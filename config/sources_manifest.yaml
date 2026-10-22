@@ -1,0 +1,91 @@
+# Legal, freely available full texts for the knowledge base (spec §3.1, §13).
+# Hosts are authors' own pages, NBER, arXiv, the St. Louis Fed, university repositories
+# and Project Gutenberg (public domain). Files are downloaded locally and NOT committed:
+# this repo is public and redistributing papers is not ours to do.
+#
+# backend/scripts/fetch_sources.py downloads each entry, checks the file (PDF signature and
+# `verify` words on the first pages), saves it as <file> under knowledge/raw/<collection>/,
+# and removes the placeholder note named in `replaces`.
+sources:
+  - collection: fundamentals
+    file: Lakonishok_1994_Contrarian_Investment_Extrapolation_and_Risk.pdf
+    url: https://www.nber.org/papers/w4360.pdf
+    verify: [contrarian, extrapolation]
+    replaces: Contrarian Investment, Extrapolation, and Risk
+    note: NBER WP 4360 (1993), published J. Finance 1994
+  - collection: fundamentals
+    file: Novy-Marx_2013_The_Other_Side_of_Value.pdf
+    url: https://www.nber.org/system/files/working_papers/w15940/w15940.pdf
+    verify: [other side of value, gross profitab]
+    replaces: "The Other Side of Value: The Gross Profitability Premium"
+    note: NBER WP 15940 (2010), earlier draft of the 2013 JFE paper
+  - collection: quant
+    file: Asness_2013_Value_and_Momentum_Everywhere.pdf
+    url: https://pages.stern.nyu.edu/~lpederse/papers/ValMomEverywhere.pdf
+    verify: [value and momentum everywhere]
+    replaces: Value and Momentum Everywhere
+    note: published version, Pedersen's NYU page
+  - collection: quant
+    file: Moskowitz_2012_Time_Series_Momentum.pdf
+    url: https://pages.stern.nyu.edu/~lpederse/papers/TimeSeriesMomentum.pdf
+    verify: [time series momentum]
+    replaces: Time Series Momentum
+    note: Pedersen's NYU page; link not confirmed live
+  - collection: quant
+    file: Frazzini_2014_Betting_Against_Beta.pdf
+    url: https://research-api.cbs.dk/ws/portalfiles/portal/60082899/lasse_heje_pedersen_et_al_betting_against_beta_publishersversion.pdf
+    verify: [betting against beta]
+    replaces: Betting Against Beta
+    note: published JFE version, CBS repository (CC BY-NC-ND)
+  - collection: chart
+    file: Lo_2000_Foundations_of_Technical_Analysis.pdf
+    url: https://www.nber.org/system/files/working_papers/w7613/w7613.pdf
+    verify: [foundations of technical analysis]
+    replaces: Foundations of Technical Analysis
+    note: NBER WP 7613 (2000)
+  - collection: chart
+    file: Neely_2014_Forecasting_the_Equity_Risk_Premium_Technical_Indicators.pdf
+    url: https://files.stlouisfed.org/files/htdocs/wp/2010/2010-008.pdf
+    verify: [equity risk premium, technical indicators]
+    replaces: "Forecasting the Equity Risk Premium: The Role of Technical Indicators"
+    note: St. Louis Fed WP 2010-008H (rev. 2013)
+  - collection: sentiment
+    file: Bollen_2011_Twitter_Mood_Predicts_the_Stock_Market.pdf
+    url: https://arxiv.org/pdf/1010.3003
+    verify: [twitter mood]
+    replaces: Twitter Mood Predicts the Stock Market
+    note: arXiv 1010.3003
+  - collection: sentiment
+    file: Araci_2019_FinBERT_Financial_Sentiment_Analysis.pdf
+    url: https://arxiv.org/pdf/1908.10063
+    verify: [finbert]
+    replaces: "FinBERT: Financial Sentiment Analysis with Pre-trained Language Models"
+    note: arXiv 1908.10063
+  - collection: sentiment
+    file: Tetlock_2007_Giving_Content_to_Investor_Sentiment.pdf
+    url: https://www.columbia.edu/~pt2238/papers/Tetlock_Media_Sentiment_JF.pdf
+    verify: [investor sentiment, media]
+    replaces: "Giving Content to Investor Sentiment: The Role of Media in the Stock Market"
+    note: author's Columbia page
+  - collection: news
+    file: Bernanke_2005_Stock_Market_Reaction_to_Federal_Reserve_Policy.pdf
+    url: https://www.nber.org/system/files/working_papers/w10402/w10402.pdf
+    verify: [federal reserve, stock market]
+    replaces: What Explains the Stock Market's Reaction to Federal Reserve Policy?
+    note: NBER WP 10402 (2004), published J. Finance 2005
+  - collection: contrarian
+    file: Barber_2001_Boys_Will_Be_Boys.pdf
+    url: https://faculty.haas.berkeley.edu/odean/papers/gender/BoysWillBeBoys.pdf
+    verify: [boys will be boys, overconfidence]
+    replaces: "Boys Will Be Boys: Gender, Overconfidence, and Common Stock Investment"
+    note: Odean's Berkeley page
+  - collection: contrarian
+    file: Lefevre_1923_Reminiscences_of_a_Stock_Operator.txt
+    url: https://www.gutenberg.org/ebooks/60979.txt.utf-8
+    verify: [reminiscences of a stock operator]
+    note: "public domain (Project Gutenberg no. 60979), spec §13"
+  - collection: contrarian
+    file: Harper_1926_The_Psychology_of_Speculation.txt
+    url: https://www.gutenberg.org/ebooks/73647.txt.utf-8
+    verify: [psychology of speculation]
+    note: "public domain (Project Gutenberg no. 73647). Spec §13 names Hoyle (1902); no free copy of Hoyle was found, so this is Harper's book of the same title."

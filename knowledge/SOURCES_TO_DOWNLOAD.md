@@ -4,7 +4,20 @@ Every note in `knowledge/raw/<collection>/placeholder_notes.md` is a placeholder
 indexed with `secondary_source: true` and `placeholder: true`. Secondary sources get a
 1.15x distance penalty at retrieval, so real texts outrank them.
 
-## Replacing a placeholder with the real source
+## Automatic download (14 legal free full texts)
+
+`config/sources_manifest.yaml` lists 12 canon papers and 2 public-domain books, all from author
+pages, NBER, arXiv, the St. Louis Fed, a university repository or Project Gutenberg. Run:
+
+```
+venv/Scripts/python backend/scripts/fetch_sources.py
+venv/Scripts/python backend/scripts/build_kb.py
+```
+
+The script verifies each file, saves it here, and removes the placeholder note it replaces.
+Downloaded files are git-ignored: this repo is public, and the papers are not ours to redistribute.
+
+## Replacing a placeholder with the real source (manually)
 
 1. Get a legitimate copy of the work as a PDF.
 2. Name it `Author_Year_Title.pdf` (e.g. `Piotroski_2000_Value_Investing.pdf`).

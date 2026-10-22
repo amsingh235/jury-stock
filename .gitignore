@@ -6,3 +6,5 @@ knowledge/chroma/
 data/cache/
 jury.db
 data/transcripts/
+knowledge/raw/*/*.pdf
+knowledge/raw/*/*_[0-9][0-9][0-9][0-9]_*.txt

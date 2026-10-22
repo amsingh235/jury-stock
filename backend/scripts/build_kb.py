@@ -11,6 +11,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
 from backend.app.kb.store import RAW_DIR, chunk_text, embed, get_collection  # noqa: E402
 
 FRONTMATTER = re.compile(r"^---\s*\n(.*?)\n---\s*\n", re.S | re.M)
+# Author_Year_Title: metadata for .pdf files and real-source .txt files.
 PDF_NAME = re.compile(r"^(?P<author>[^_]+)_(?P<year>\d{4})_(?P<title>.+)$")
 
 
@@ -37,7 +38,16 @@ def split_notes(text: str) -> list[tuple[dict, str]]:
 
 
 def load_text_file(path: Path, collection: str) -> list[tuple[dict, str]]:
-    """Load an md/txt file; every note is a placeholder secondary source."""
+    """Load an md/txt file.
+
+    A .txt named Author_Year_Title.txt is a real full text (e.g. a public-domain book);
+    anything else is placeholder notes, split on frontmatter and marked secondary.
+    """
+    m = PDF_NAME.match(path.stem)
+    if path.suffix.lower() == ".txt" and m:
+        meta = {"author": m["author"], "year": m["year"], "title": m["title"].replace("_", " "),
+                "doc_type": "book", "secondary_source": False, "placeholder": False}
+        return [(meta, path.read_text(encoding="utf-8", errors="ignore"))]
     docs = []
     for meta, body in split_notes(path.read_text(encoding="utf-8")):
         meta.setdefault("title", path.stem)
