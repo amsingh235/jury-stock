@@ -67,7 +67,13 @@ def load_pdf(path: Path, collection: str) -> list[tuple[dict, str]]:
     """Load a PDF; metadata comes from the Author_Year_Title.pdf filename."""
     from pypdf import PdfReader
 
-    text = "\n".join(page.extract_text() or "" for page in PdfReader(path).pages)
+    pages = []
+    for i, page in enumerate(PdfReader(path).pages):
+        try:
+            pages.append(page.extract_text() or "")
+        except Exception as e:  # one unreadable page must not stop the build
+            print(f"  skipped page {i + 1} of {path.name}: {type(e).__name__}")
+    text = "\n".join(pages)
     m = PDF_NAME.match(path.stem)
     meta = (
         {"author": m["author"], "year": m["year"], "title": m["title"].replace("_", " ")}
