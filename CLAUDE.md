@@ -2,8 +2,13 @@
 
 - Spec: `docs/CLAUDE_PROMPT.md` is the single source of truth. Verdict labels are renamed to
   STRONG POSITIVE SIGNALS / MIXED / WEAK SIGNALS (see `config/judge_weights.yaml`).
-- The One Rule: never write advice phrasing (buy/sell recommendations, guaranteed returns,
-  price targets) in code, UI strings or comments. Use score-signal framing and the disclaimer.
+- The One Rule: agents, Judge, UI and comments never use advice phrasing (buy/sell
+  recommendations, guaranteed returns, price targets); use score-signal framing and the disclaimer.
+  Owner revision 2026-10-22 (spec §0a): only the nightly brief may name picks, each with a measured
+  base-rate probability (Opus may adjust by at most +/-10 pts, cap 80%), stop, target, horizon and
+  disclaimer. No hype or certainty claims anywhere (guard level "brief").
+- DeepSeek is used manually and free: `nightly.py prepare` writes a prompt, the owner pastes
+  DeepSeek's reply into data/deepseek/<date>_reply.md; it is UNVERIFIED input to the agents.
 - Build milestone by milestone; stop after each, report, and wait for "go".
 - Python 3.13. On Windows use `venv/Scripts/python`.
 - Docstrings on every function.

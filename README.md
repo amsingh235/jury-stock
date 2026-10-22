@@ -9,6 +9,18 @@ a "Where this analysis could be wrong" section from the Devil's Advocate, and th
 
 > Analysis for education only. Not investment advice.
 
+Owner revision (2026-10-22): the nightly brief may name next-day picks, each with a measured
+base-rate probability, entry, stop, target and horizon. See `docs/CLAUDE_PROMPT.md` §0a.
+
+## Nightly run (free DeepSeek step + Opus brief)
+
+```
+venv/Scripts/python backend/scripts/nightly.py prepare            # writes data/deepseek/<date>_prompt.md
+#   paste it into chat.deepseek.com (Search + DeepThink on), save the reply to data/deepseek/<date>_reply.md
+venv/Scripts/python backend/scripts/nightly.py run                # agents + Judge + Opus brief -> data/briefs/<date>.md
+venv/Scripts/python backend/scripts/nightly.py review             # how past picks actually did
+```
+
 ## What it does
 
 Six specialist agents (fundamentals, quant, chart, sentiment, news, devil's advocate), each grounded

@@ -58,6 +58,14 @@ def _render(inputs: dict) -> str:
     return json.dumps(plain, default=str, indent=1) + ("\n" + "\n".join(blocks) if blocks else "")
 
 
+def _ds(c: dict, *fields: str) -> "Untrusted":
+    """Selected fields of the pasted DeepSeek research, fenced as untrusted (empty if none)."""
+    r = c.get("deepseek")
+    if not r:
+        return Untrusted([])
+    return Untrusted([{"provenance": r["provenance"], **{f: r.get(f) for f in fields}}])
+
+
 @dataclass
 class AgentSpec:
     """Static definition of one agent."""
@@ -88,7 +96,8 @@ AGENTS: dict[str, AgentSpec] = {
     "fundamentals": AgentSpec(
         "fundamentals", "FUNDAMENTALS AGENT", "Value & Quality",
         lambda c: {"company": c["info"], "piotroski": c["piotroski"], "financial_trend": c["financial_trend"],
-                   "peers": c["peers"], "data_gaps": c["gaps"].get("fundamentals", [])},
+                   "peers": c["peers"], "data_gaps": c["gaps"].get("fundamentals", []),
+                   "deepseek_research": _ds(c, "promoter_and_governance", "sector_context")},
         lambda c: "valuation margin of safety earnings quality accruals F-score profitability distress",
     ),
     "quant": AgentSpec(
@@ -106,13 +115,15 @@ AGENTS: dict[str, AgentSpec] = {
         "sentiment", "SENTIMENT AGENT", "NLP",
         lambda c: {"headlines": Untrusted(c["headlines"]), "headline_count": len(c["headlines"]),
                    "sources": sorted({h["source"] for h in c["headlines"]}),
-                   "data_gaps": c["gaps"].get("news", [])},
+                   "data_gaps": c["gaps"].get("news", []),
+                   "deepseek_research": _ds(c, "news")},
         lambda c: "media pessimism retail attention sentiment reversal message boards hype",
     ),
     "news": AgentSpec(
         "news", "NEWS & EVENTS AGENT", "Event-Study",
         lambda c: {"event_candidates": Untrusted(c["events"]), "upcoming_catalysts": c.get("catalysts", []),
-                   "data_gaps": c["gaps"].get("events", [])},
+                   "data_gaps": c["gaps"].get("events", []),
+                   "deepseek_research": _ds(c, "news", "upcoming_events", "promoter_and_governance")},
         _news_query,
     ),
     "devils_advocate": AgentSpec(
@@ -120,7 +131,8 @@ AGENTS: dict[str, AgentSpec] = {
         lambda c: {"other_agents": c.get("agent_outputs", {}),
                    "liquidity": {"avg_traded_value_cr": c["factors"].get("avg_traded_value_cr"),
                                  "market_cap_cr": c["factors"].get("market_cap_cr"),
-                                 "price": c["chart"].get("indicators", {}).get("price")}},
+                                 "price": c["chart"].get("indicators", {}).get("price")},
+                   "deepseek_research": _ds(c, "bull_case", "bear_case", "key_risks")},
         lambda c: "overconfidence herding narrative fallacy data mining survivorship tail risk penny stock pump",
         k=8,
     ),

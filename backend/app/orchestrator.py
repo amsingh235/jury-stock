@@ -21,12 +21,13 @@ FIRST_WAVE = ["fundamentals", "quant", "chart", "sentiment", "news"]
 TRANSCRIPT_DIR = Path(__file__).resolve().parents[2] / "data" / "transcripts"
 
 
-def run_jury(symbol: str, router: Router | None = None, on_event=None, log=print) -> dict:
+def run_jury(symbol: str, router: Router | None = None, on_event=None, log=print,
+             research: dict | None = None) -> dict:
     """Build context, run all six agents and return the full transcript."""
     emit = on_event or (lambda e: None)
     router = router or Router.from_config()
     t0 = time.time()
-    ctx = build_context(symbol, log=log)
+    ctx = build_context(symbol, log=log, research=research)
     results: dict[str, dict] = {}
     with ThreadPoolExecutor(max_workers=len(FIRST_WAVE)) as pool:
         futures = {}
@@ -55,9 +56,10 @@ def run_jury(symbol: str, router: Router | None = None, on_event=None, log=print
         "symbol": ctx["symbol"],
         "run_at": datetime.now().isoformat(timespec="seconds"),
         "seconds": round(time.time() - t0, 1),
-        "inputs": {k: ctx[k] for k in ("info", "chart", "factors", "piotroski", "peers", "headlines", "events", "catalysts", "gaps")},
+        "inputs": {k: ctx[k] for k in ("info", "chart", "factors", "piotroski", "peers", "headlines", "events", "catalysts", "gaps", "deepseek")},
         "agents": results,
         "verdict": verdict,
+        "_ohlcv": ctx["ohlcv"],  # in-memory only (brief's setup score); never saved
     }
 
 
@@ -65,5 +67,6 @@ def save_transcript(t: dict) -> Path:
     """Write a transcript to data/transcripts/<SYMBOL>_<timestamp>.json."""
     TRANSCRIPT_DIR.mkdir(parents=True, exist_ok=True)
     path = TRANSCRIPT_DIR / f"{t['symbol']}_{t['run_at'].replace(':', '')}.json"
-    path.write_text(json.dumps(t, indent=2, default=str), encoding="utf-8")
+    saved = {k: v for k, v in t.items() if not k.startswith("_")}
+    path.write_text(json.dumps(saved, indent=2, default=str), encoding="utf-8")
     return path

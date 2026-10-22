@@ -1,0 +1,14 @@
+# Nightly brief rules (owner-approved 2026-10-22: "a little bit risky").
+# Probability = measured base rate of the setup band, adjusted by Opus within +/- max_adjustment_pp,
+# then clamped. A stock becomes a pick only if every rule below passes.
+max_adjustment_pp: 10
+probability_floor: 0.05
+probability_cap: 0.80
+min_probability: 0.55
+min_verdict_score: 60
+min_reward_risk: 1.5
+max_devils_advocate_risk: 70
+min_avg_traded_value_cr: 5
+max_picks: 5
+horizon_days: 10
+disclaimer: "Personal research tool, not investment advice. Probabilities are historical base rates from a small, survivor-biased sample, adjusted by a model; they are not promises."

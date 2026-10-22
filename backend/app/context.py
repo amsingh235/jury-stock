@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 from .data import market, news
+from .research import deepseek_bridge
 from .db import connect
 from .services import chart_engine, factors, fundamentals
 
@@ -21,8 +22,11 @@ def watchlist_peers(limit: int = 60) -> list[dict]:
     return peers
 
 
-def build_context(symbol: str, log=print) -> dict:
-    """Fetch prices, fundamentals, chart, factors, headlines and events for ``symbol``."""
+def build_context(symbol: str, log=print, research: dict | None = None) -> dict:
+    """Fetch prices, fundamentals, chart, factors, headlines and events for ``symbol``.
+
+    ``research`` is parsed DeepSeek output ({SYMBOL: research}); this stock's part is attached.
+    """
     sym = market.to_nse(symbol)
     gaps: dict[str, list[str]] = {}
     log(f"[{sym}] prices")
@@ -61,5 +65,6 @@ def build_context(symbol: str, log=print) -> dict:
         "events": events,
         "catalysts": catalysts,
         "gaps": gaps,
+        "deepseek": deepseek_bridge.for_symbol(research or {}, sym),
         "ohlcv": df,  # for chart rendering only; never passed to an agent prompt
     }
