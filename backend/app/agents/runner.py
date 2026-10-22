@@ -58,6 +58,14 @@ def _render(inputs: dict) -> str:
     return json.dumps(plain, default=str, indent=1) + ("\n" + "\n".join(blocks) if blocks else "")
 
 
+def debate_digest(debate: dict | None) -> list[dict]:
+    """Debate turns without prompts (what each side argued, rebutted and conceded)."""
+    if not debate:
+        return []
+    return [{"round": t["round"], "side": t["side"], **(t.get("output") or {"error": t.get("error")})}
+            for t in debate["turns"]]
+
+
 def _ds(c: dict, *fields: str) -> "Untrusted":
     """Selected fields of the pasted DeepSeek research, fenced as untrusted (empty if none)."""
     r = c.get("deepseek")
@@ -132,7 +140,8 @@ AGENTS: dict[str, AgentSpec] = {
                    "liquidity": {"avg_traded_value_cr": c["factors"].get("avg_traded_value_cr"),
                                  "market_cap_cr": c["factors"].get("market_cap_cr"),
                                  "price": c["chart"].get("indicators", {}).get("price")},
-                   "deepseek_research": _ds(c, "bull_case", "bear_case", "key_risks")},
+                   "deepseek_research": _ds(c, "bull_case", "bear_case", "key_risks"),
+                   "bull_vs_bear_debate": Untrusted(debate_digest(c.get("debate")))},
         lambda c: "overconfidence herding narrative fallacy data mining survivorship tail risk penny stock pump",
         k=8,
     ),

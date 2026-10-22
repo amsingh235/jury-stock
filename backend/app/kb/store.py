@@ -35,6 +35,10 @@ AGENT_SCOPE: dict[str, list[str]] = {
     "sentiment": ["sentiment"],
     "news": ["news"],
     "devils_advocate": list(COLLECTIONS),
+    # Debate researchers: the Bull argues from the five analyst schools, the Bear adds the
+    # behavioural and risk (contrarian) literature.
+    "bull": [c for c in COLLECTIONS if c != "contrarian"],
+    "bear": list(COLLECTIONS),
 }
 
 

@@ -32,3 +32,10 @@ guardrail wording from that repo; no code is copied.
   has to be checked.
 - **Earnings-analysis skill** (beat/miss vs consensus, guidance changes, dodged questions): only
   possible once a transcript source exists; yfinance does not provide transcripts.
+
+## Bull vs Bear debate (from TradingAgents)
+
+Adapted from TradingAgents (Xiao et al., 2024, arXiv 2412.20138; github.com/TauricResearch/TradingAgents):
+after the analysts, a Bull and a Bear researcher debate for N rounds, each rebutting or conceding the
+other's points. In JURY the debate informs the Devil's Advocate, the Judge's narrative and the nightly
+brief, but the score stays the deterministic spec §6 formula. No code was copied.

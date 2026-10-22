@@ -30,7 +30,8 @@ LEDGER_FIELDS = ["date", "symbol", "entry", "stop", "target", "reward_risk", "pr
                  "adjustment_pp", "verdict_score", "horizon_days"]
 
 SYSTEM = """You are the CHIEF JUSTICE of JURY, reviewing tonight's verdicts to prepare tomorrow's brief.
-For each stock you get: the Judge's verdict and chart study, the Devil's Advocate's case, DeepSeek's
+For each stock you get: the Judge's verdict and chart study, the Bull vs Bear debate digest, the
+Devil's Advocate's case, DeepSeek's
 pasted research (UNVERIFIED: weigh it below the agents' sourced data), the measured base rate for the
 stock's price setup, and deterministic trade levels.
 
@@ -76,6 +77,7 @@ def stock_packet(t: dict, table: dict, cfg: dict) -> dict:
         "judge": (v.get("explainer") or {}),
         "devils_advocate_risk": t["agents"].get("devils_advocate", {}).get("output", {}).get("risk_score"),
         "deepseek": inp.get("deepseek"),
+        "debate": (t.get("debate") or {}).get("summary"),
         "setup_score": setup,
         "base_rate": base,
         "plan": trade_plan.plan(inp["chart"], cfg["horizon_days"]),

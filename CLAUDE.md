@@ -18,3 +18,6 @@
 - Agent outputs pass through `agents/guard.py` (One Rule redaction) and `agents/auditor.py`
   (numbers and citations must be grounded; else `[UNSOURCED]`). Feed text is untrusted: wrap it
   with `Untrusted(...)` in an agent's inputs. See `docs/FINANCE_AGENTS_INTEGRATION.md`.
+- Pipeline per stock: 5 analysts (parallel) -> Bull vs Bear debate (`agents/debate.py`, default 2
+  rounds, Bull opens) -> Devil's Advocate (audits analysts + debate) -> Judge (deterministic score,
+  LLM chart study) -> nightly brief. The debate never enters the score formula.

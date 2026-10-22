@@ -16,6 +16,8 @@ QUERIES = {
     "sentiment": "extreme retail attention and media pessimism",
     "news": "post earnings announcement drift after a surprise",
     "devils_advocate": "why the bullish consensus could be wrong",
+    "bull": "earnings drift and momentum continuation after strong results",
+    "bear": "value trap distress risk and overreaction",
 }
 
 

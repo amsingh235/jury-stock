@@ -67,7 +67,8 @@ def cmd_run(args) -> None:
     transcripts = []
     for s in syms:
         print(f"\n== {s}")
-        t = run_jury(s, router=router, research=research, on_event=lambda e: print(f"  {e['agent']}: {e['status']}"))
+        t = run_jury(s, router=router, research=research, debate_rounds=args.debate_rounds,
+                     on_event=lambda e: print(f"  {e['agent']}: {e['status']}" + (f" (round {e['round']})" if "round" in e else "")))
         t["llm"] = args.llm
         save_transcript(t)
         v = t["verdict"]
@@ -113,6 +114,7 @@ def main(argv: list[str]) -> None:
         sp.add_argument("--top", type=int, default=5)
         if name == "run":
             sp.add_argument("--llm", choices=["opus", "free"], default="opus")
+            sp.add_argument("--debate-rounds", type=int, default=2, help="Bull vs Bear rounds (0 = skip)")
             sp.add_argument("--reply", help="path to DeepSeek reply (default: today's file)")
     sub.add_parser("backtest")
     sub.add_parser("review")

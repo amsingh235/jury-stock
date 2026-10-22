@@ -38,6 +38,26 @@ def _md_value(v, indent: int = 0) -> str:
     return f"{pad}{v}"
 
 
+def debate_markdown(debate: dict | None) -> list[str]:
+    """The Bull vs Bear debate, turn by turn."""
+    if not debate:
+        return []
+    lines = [f"## Bull vs Bear debate ({debate['rounds']} rounds, {debate['seconds']}s)", ""]
+    for t in debate["turns"]:
+        head = f"**Round {t['round']} · {t['side'].upper()}**"
+        if t["status"] != "DONE":
+            lines += [f"{head}: failed ({t.get('error')})", ""]
+            continue
+        o = t["output"]
+        lines += [f"{head}: {o['argument']}", "", *[f"- {p}" for p in o["key_points"]]]
+        lines += [f"- *Rebuts* \"{r['opponent_point']}\": {r['response']}" for r in o.get("rebuttals", [])]
+        lines += [f"- *Concedes:* {c}" for c in o.get("concessions", [])]
+        lines.append("")
+    for side, s in debate["summary"].items():
+        lines.append(f"- **{side.title()} conceded:** {'; '.join(s['conceded']) or 'nothing'}")
+    return lines + [""]
+
+
 def report_markdown(t: dict) -> str:
     """Everything from one run as a readable Markdown report."""
     inp = t["inputs"]
@@ -89,6 +109,7 @@ def report_markdown(t: dict) -> str:
         ]
     else:
         lines += [f"Judge explainer failed: {v.get('error')}. The score above stands; narrative unavailable.", ""]
+    lines += debate_markdown(t.get("debate"))
     lines += [
         "# Deliberation transcript",
         "",
@@ -139,6 +160,10 @@ def show(t: dict) -> None:
         flags = len(rec["grounding"]["unsourced_numbers"]) + len(rec["grounding"]["unverified_citations"])
         print(f"  {key:16s} {'risk' if key == 'devils_advocate' else 'score'}={val:<3} conf={o['confidence']:<6} "
               f"audit_flags={flags} {rec['seconds']}s")
+    d = t.get("debate")
+    if d:
+        print(f"  debate: {d['rounds']} rounds, {'complete' if d['complete'] else 'incomplete'}; "
+              f"bull conceded {len(d['summary']['bull']['conceded'])}, bear conceded {len(d['summary']['bear']['conceded'])}")
     if v["status"] == "DONE":
         cs = v["explainer"]["chart_study"]
         print(f"  judge chart study: {cs['chart_bias']} (agrees with chart agent: {cs['agrees_with_chart_agent']})")
@@ -152,12 +177,14 @@ def main(argv: list[str]) -> None:
     """Parse arguments, run each symbol, save transcript + report."""
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("symbols", nargs="*", default=["IDEA", "SUZLON", "YESBANK"])
+    ap.add_argument("--debate-rounds", type=int, default=2, help="Bull vs Bear rounds (0 = skip the debate)")
     ap.add_argument("--llm", choices=["free", "opus"], default="free",
                     help="free = Groq/Gemini (API keys); opus = Opus via your Claude subscription (claude CLI)")
     args = ap.parse_args(argv)
     router = Router.opus() if args.llm == "opus" else Router.from_config()
     for sym in args.symbols:
-        t = run_jury(sym, router=router, on_event=lambda e: print(f"  {e['agent']}: {e['status']}"))
+        t = run_jury(sym, router=router, debate_rounds=args.debate_rounds,
+                     on_event=lambda e: print(f"  {e['agent']}: {e['status']}" + (f" (round {e['round']})" if "round" in e else "")))
         t["llm"] = args.llm
         show(t)
         path = save_transcript(t)
