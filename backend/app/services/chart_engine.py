@@ -168,7 +168,7 @@ def significant_pivots(pivots: list[Pivot], min_swing_pct: float) -> list[Pivot]
 
 
 def support_resistance(pivots: list[Pivot], price: float, tol: float, max_levels: int = 6) -> list[dict]:
-    """Cluster pivot prices within ``tol`` of each other into S/R levels ranked by touches."""
+    """Cluster pivot prices within ``tol`` into S/R levels; return the nearest supports and resistances."""
     clusters: list[list[float]] = []
     for p in sorted(pv.price for pv in pivots):
         if clusters and p - np.mean(clusters[-1]) <= tol:
@@ -180,12 +180,18 @@ def support_resistance(pivots: list[Pivot], price: float, tol: float, max_levels
             "level": round(float(np.mean(c)), 2),
             "touches": len(c),
             "type": "support" if np.mean(c) < price else "resistance",
-            "distance_pct": round(100 * (np.mean(c) - price) / price, 2),
+            "distance_pct": round(float(100 * (np.mean(c) - price) / price), 2),
         }
         for c in clusters
     ]
-    levels.sort(key=lambda lv: (-lv["touches"], abs(lv["distance_pct"])))
-    return levels[:max_levels]
+    # Nearest levels on each side first; within that, more touches is stronger.
+    per_side = max_levels // 2
+    out = []
+    for side in ("support", "resistance"):
+        side_levels = [lv for lv in levels if lv["type"] == side]
+        side_levels.sort(key=lambda lv: (abs(lv["distance_pct"]), -lv["touches"]))
+        out += side_levels[:per_side]
+    return out
 
 
 # ------------------------------------------------------------------ patterns

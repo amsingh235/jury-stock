@@ -32,8 +32,9 @@ venv/Scripts/python -m pytest tests
 backend/app/kb/        knowledge base store + scoped retriever (M1)
 backend/app/data/      market data, NSE screener (M2)
 backend/app/services/  chart engine (M2)
-backend/app/agents/prompts/  agent system prompts (spec §12)
-backend/scripts/       build_kb.py, test_retrieval.py, screen.py
+backend/app/agents/   prompts (spec §12), schemas, runner, One Rule guard, grounding auditor (M3)
+backend/app/llm/      Groq -> Gemini router with JSON validation and repair (M3)
+backend/scripts/       build_kb.py, test_retrieval.py, screen.py, chart_report.py, run_jury.py
 config/                judge weights, screen filters
 knowledge/raw/<collection>/  source documents and placeholder notes
 ```

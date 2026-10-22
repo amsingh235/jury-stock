@@ -1,0 +1,14 @@
+# LLM router (spec §2): Groq primary, Gemini free tier fallback. Opus is never used here (§11).
+providers:
+  - name: groq
+    model: llama-3.3-70b-versatile
+    api_key_env: GROQ_API_KEY
+    url: https://api.groq.com/openai/v1/chat/completions
+  - name: gemini
+    model: gemini-2.5-flash
+    api_key_env: GEMINI_API_KEY
+    url: https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent
+temperature: 0.2
+max_output_tokens: 1800
+timeout_s: 60
+retries_per_provider: 2

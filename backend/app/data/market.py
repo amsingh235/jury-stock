@@ -17,7 +17,7 @@ INFO_KEYS = [
     "enterpriseToEbitda", "returnOnEquity", "returnOnAssets", "profitMargins", "grossMargins",
     "operatingMargins", "revenueGrowth", "earningsGrowth", "debtToEquity", "currentRatio",
     "totalRevenue", "freeCashflow", "operatingCashflow", "beta", "averageVolume",
-    "fiftyTwoWeekHigh", "fiftyTwoWeekLow", "sharesOutstanding",
+    "fiftyTwoWeekHigh", "fiftyTwoWeekLow", "sharesOutstanding", "exDividendDate",
 ]
 
 
@@ -26,9 +26,9 @@ class MarketDataError(RuntimeError):
 
 
 def to_nse(symbol: str) -> str:
-    """Normalise a symbol to its yfinance NSE form, e.g. 'idea' -> 'IDEA.NS'."""
+    """Normalise a symbol to its yfinance NSE form, e.g. 'idea' -> 'IDEA.NS'; indices like ^NSEI pass through."""
     s = symbol.strip().upper()
-    return s if s.endswith((".NS", ".BO")) else f"{s}.NS"
+    return s if s.startswith("^") or s.endswith((".NS", ".BO")) else f"{s}.NS"
 
 
 def _retry(fn, attempts: int = 3, base_delay: float = 2.0):

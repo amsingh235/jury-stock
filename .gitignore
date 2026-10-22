@@ -5,3 +5,4 @@ knowledge/chroma/
 .pytest_cache/
 data/cache/
 jury.db
+data/transcripts/
