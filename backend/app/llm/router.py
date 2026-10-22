@@ -35,15 +35,32 @@ def load_env(path: Path | None = None) -> None:
 
 
 def extract_json(text: str) -> dict:
-    """Parse the first JSON object in ``text``, tolerating code fences and surrounding prose."""
+    """Parse the first JSON object in ``text``, tolerating code fences, surrounding prose, and a
+    premature closing brace (long model replies sometimes close the object before their last fields).
+    """
     text = re.sub(r"^```(?:json)?\s*|\s*```$", "", text.strip())
-    try:
-        return json.loads(text)
-    except json.JSONDecodeError:
-        start, end = text.find("{"), text.rfind("}")
-        if start == -1 or end <= start:
+    start = text.find("{")
+    if start == -1:
+        raise json.JSONDecodeError("no JSON object found", text, 0)
+    candidate = text[start:]
+    for _ in range(3):
+        try:
+            return json.loads(candidate)
+        except json.JSONDecodeError as e:
+            rest = candidate[e.pos:].lstrip()
+            if e.msg.startswith("Extra data") and rest.startswith(","):
+                # "{...}, \"more\": ..." -> drop the early "}" so the trailing fields stay inside.
+                close = candidate.rfind("}", 0, e.pos)
+                candidate = candidate[:close] + candidate[close + 1:]
+                continue
+            if e.msg.startswith("Extra data"):
+                return json.loads(candidate[:e.pos])  # valid object followed by prose
+            end = candidate.rfind("}")
+            if end > 0 and end + 1 < len(candidate):
+                candidate = candidate[:end + 1]
+                continue
             raise
-        return json.loads(text[start:end + 1])
+    return json.loads(candidate)
 
 
 @dataclass

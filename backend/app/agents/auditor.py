@@ -72,7 +72,7 @@ def _prose(output: dict) -> list[str]:
 def _trivial(v: float, tok: str) -> bool:
     """Small counts, years and window lengths that need no source (e.g. '3 sources', '2000', '12-1')."""
     return (abs(v) <= 12 and v == int(v) and "%" not in tok) or (1900 <= v <= 2100 and v == int(v)) \
-        or v in (14, 20, 26, 50, 52, 100, 200)
+        or v in (14, 20, 26, 50, 52, 100, 120, 200)  # indicator windows, chart length
 
 
 def _matches(v: float, pool: list[float], rel: float = 0.015) -> bool:

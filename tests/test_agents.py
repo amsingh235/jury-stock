@@ -213,3 +213,12 @@ def test_auditor_handles_multi_author_strings():
     retrieved = [{"author": "Moskowitz, Ooi and Pedersen", "year": "2012"}, {"author": "Stickel; Gleason and Lee", "year": "2003"}]
     out = {"reasoning": "Trend persists (Moskowitz, 2012); revisions drift (Stickel, 2003).", "citations": []}
     assert auditor.audit(out, {}, retrieved)["unverified_citations"] == []
+
+
+def test_extract_json_repairs_premature_closing_brace():
+    """A reply that closes the object before its last field still parses with every field."""
+    broken = '```json\n{"a": {"x": 1},\n "b": "long text"\n },\n "c": [1, 2]\n}\n```'
+    assert extract_json(broken) == {"a": {"x": 1}, "b": "long text", "c": [1, 2]}
+    assert extract_json('{"a": 1} trailing words') == {"a": 1}
+    with pytest.raises(json.JSONDecodeError):
+        extract_json("no json here")
