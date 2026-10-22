@@ -5,7 +5,7 @@ year: 1969
 doc_type: paper
 school: event_study
 ---
-PLACEHOLDER knowledge note. The first modern event study shows that prices adjust to stock split information quickly and largely before the announcement. It establishes the methodology of measuring abnormal returns relative to a market model over an event window.
+PLACEHOLDER knowledge note. Fama, Fisher, Jensen and Roll study 940 stock splits on the NYSE (1927-1959) using monthly returns and a market model to measure abnormal returns. Prices rise substantially in the months before a split, reflecting the information splits signal about future dividends, and show no abnormal movement after the split once dividend news is known. The study founded the event-study methodology: define an event date, estimate normal returns, and measure cumulative abnormal returns around the event window.
 
 ---
 title: Post-Earnings-Announcement Drift: Delayed Price Response or Risk Premium?
@@ -23,7 +23,7 @@ year: 1995
 doc_type: paper
 school: event_study
 ---
-PLACEHOLDER knowledge note. Stocks announcing open-market buybacks earn abnormal returns of about 12 percent over four years after the announcement, especially high book-to-market firms. The market underreacts to the undervaluation signal.
+PLACEHOLDER knowledge note. Ikenberry, Lakonishok and Vermaelen examine 1,239 open-market buyback announcements (1980-1990). The announcement return is about 3.5 percent, but long-run abnormal returns over the following four years average about 12 percent, and about 45 percent for high book-to-market (value) firms, which are most likely repurchasing because they are undervalued. Glamour stocks show no abnormal drift. The market underreacts to the managerial signal of undervaluation, especially when the firm looks cheap.
 
 ---
 title: Market Timing and Managerial Portfolio Decisions
@@ -50,16 +50,7 @@ year: 1990
 doc_type: paper
 school: event_study
 ---
-PLACEHOLDER knowledge note. Takeover rumours published in the press move prices, but most rumoured deals never happen and the price impact largely unwinds. Rumours should be treated as distinct from verified events, with high gap risk.
-
----
-title: What Explains the Stock Market's Reaction to Federal Reserve Policy?
-author: Bernanke and Kuttner
-year: 2005
-doc_type: paper
-school: event_study
----
-PLACEHOLDER knowledge note. An unanticipated 25 basis point cut in the policy rate is associated with roughly a 1 percent rise in broad equity indexes, mostly through changes in expected future excess returns. Only the surprise component of policy moves matters.
+PLACEHOLDER knowledge note. Pound and Zeckhauser study takeover rumours published in the Wall Street Journal's Heard on the Street column. Rumoured targets earn significant price run-ups before and on publication, but in most cases no bid follows within a year, and prices of unrealised rumours tend to fall back. Rumours are partly priced and noisy. Rumoured events should be separated from verified announcements, carry gap risk in both directions, and in thinly traded stocks may be planted to move prices.
 
 ---
 title: Monetary Policy Announcements and Indian Equity Markets
@@ -68,7 +59,7 @@ year: 2015
 doc_type: notes
 school: event_study
 ---
-PLACEHOLDER knowledge note. Studies of RBI policy announcements find that surprise repo rate changes move NSE indices, with rate-sensitive sectors such as banks, NBFCs, real estate and autos reacting most. Expected decisions produce little response.
+PLACEHOLDER knowledge note. Studies of Reserve Bank of India monetary policy announcements report that unanticipated repo rate changes move NSE indices, while expected decisions have little effect. Rate-sensitive sectors such as banks, NBFCs, real estate and autos react most strongly, and liquidity measures (CRR changes, open market operations) also matter. Policy tone and forward guidance in the statement can move markets even without a rate change. These are aggregate findings from a mixed literature; individual small-cap reactions vary widely.
 
 ---
 title: Sector Rotation over Business Cycles
@@ -78,4 +69,31 @@ doc_type: paper
 school: event_study
 ---
 PLACEHOLDER knowledge note. Conventional sector rotation rules (cyclicals early, defensives late in the cycle) deliver small gains that mostly disappear once transaction costs are counted and cycle timing is uncertain. Sector context matters for interpreting events, but rotation is not a reliable standalone signal.
+
+---
+title: An Empirical Evaluation of Accounting Income Numbers
+author: Ball and Brown
+year: 1968
+doc_type: paper
+school: event_study
+---
+PLACEHOLDER knowledge note. The founding earnings-announcement study: stock prices move in the direction of unexpected annual earnings changes, but most of the information is impounded before the announcement, and some drift continues afterwards. Accounting earnings carry information that investors use, establishing the basis for later post-earnings drift research.
+
+---
+title: Momentum Strategies
+author: Chan, Jegadeesh and Lakonishok
+year: 1996
+doc_type: paper
+school: event_study
+---
+PLACEHOLDER knowledge note. Both past returns and past earnings surprises (standardized unexpected earnings, abnormal announcement returns, analyst forecast revisions) predict future returns over six to twelve months. Price and earnings momentum are distinct effects. The market responds gradually to new information, especially for stocks with poor past performance, and analysts are slow to revise.
+
+---
+title: Stock Price Reaction to News and No-News: Drift and Reversal after Headlines
+author: Chan
+year: 2003
+doc_type: paper
+school: event_study
+---
+PLACEHOLDER knowledge note. Stocks with large price moves accompanied by public news display momentum (drift) afterwards, especially after bad news, whereas stocks with similar moves but no identifiable news tend to reverse. Investors underreact to public information and overreact to price moves without news, so whether a move has a news source matters.
 

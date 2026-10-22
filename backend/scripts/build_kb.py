@@ -37,6 +37,13 @@ def split_notes(text: str) -> list[tuple[dict, str]]:
     return notes
 
 
+def strip_gutenberg(text: str) -> str:
+    """Drop Project Gutenberg's licence header and footer, keeping only the book."""
+    start = re.search(r"\*\*\* ?START OF (THE|THIS) PROJECT GUTENBERG.*?\*\*\*", text)
+    end = re.search(r"\*\*\* ?END OF (THE|THIS) PROJECT GUTENBERG", text)
+    return text[start.end() if start else 0: end.start() if end else len(text)].strip()
+
+
 def load_text_file(path: Path, collection: str) -> list[tuple[dict, str]]:
     """Load an md/txt file.
 
@@ -47,7 +54,7 @@ def load_text_file(path: Path, collection: str) -> list[tuple[dict, str]]:
     if path.suffix.lower() == ".txt" and m:
         meta = {"author": m["author"], "year": m["year"], "title": m["title"].replace("_", " "),
                 "doc_type": "book", "secondary_source": False, "placeholder": False}
-        return [(meta, path.read_text(encoding="utf-8", errors="ignore"))]
+        return [(meta, strip_gutenberg(path.read_text(encoding="utf-8", errors="ignore")))]
     docs = []
     for meta, body in split_notes(path.read_text(encoding="utf-8")):
         meta.setdefault("title", path.stem)
@@ -73,6 +80,20 @@ def load_pdf(path: Path, collection: str) -> list[tuple[dict, str]]:
 LOADERS = {".md": load_text_file, ".txt": load_text_file, ".pdf": load_pdf}
 
 
+COMMON_WORDS = set("the of and to in a is that for are with as by on this we be from at an not or which".split())
+REF_RX = re.compile(r"\b(journal of|review of|econometrica|working paper|vol\.|pp\.)", re.I)
+
+
+def is_prose(chunk: str) -> bool:
+    """Keep readable prose; drop reference lists, numeric tables and garbled maths from full texts."""
+    words = re.findall(r"[a-z]+", chunk.lower())
+    if len(words) < 40:
+        return False
+    common = sum(w in COMMON_WORDS for w in words) / len(words)
+    years = len(re.findall(r"\b(19|20)\d{2}\b", chunk))
+    return common >= 0.12 and len(REF_RX.findall(chunk)) < 4 and years < 12
+
+
 def clean_meta(meta: dict, collection: str, source: Path, idx: int) -> dict:
     """Coerce metadata to Chroma-safe scalar values and add provenance fields."""
     out = {k: v if isinstance(v, (str, int, float, bool)) else str(v) for k, v in meta.items()}
@@ -95,6 +116,8 @@ def build(raw_dir: Path = RAW_DIR, reset: bool = True) -> int:
                 continue
             for meta, body in loader(path, coll_dir.name):
                 chunks = chunk_text(body)
+                if not meta.get("placeholder"):  # filter noise from full texts only
+                    chunks = [c for c in chunks if is_prose(c)]
                 if not chunks:
                     continue
                 ids, metas = [], []

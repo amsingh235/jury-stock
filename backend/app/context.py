@@ -61,4 +61,5 @@ def build_context(symbol: str, log=print) -> dict:
         "events": events,
         "catalysts": catalysts,
         "gaps": gaps,
+        "ohlcv": df,  # for chart rendering only; never passed to an agent prompt
     }

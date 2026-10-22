@@ -35,15 +35,6 @@ school: value_quality
 PLACEHOLDER knowledge note. Piotroski builds a nine-point F-score from profitability (positive ROA, positive operating cash flow, improving ROA, accruals: cash flow above net income), leverage and liquidity (falling leverage, improving current ratio, no new equity issuance) and operating efficiency (improving gross margin and asset turnover). Among high book-to-market stocks, high F-score firms outperform low F-score firms by about 23 percent a year in the US sample. The effect is strongest in small, thinly followed firms, which is relevant for low-priced stocks.
 
 ---
-title: The Other Side of Value: The Gross Profitability Premium
-author: Novy-Marx
-year: 2013
-doc_type: paper
-school: value_quality
----
-PLACEHOLDER knowledge note. Gross profits scaled by assets predict returns about as well as book-to-market. Profitable firms earn higher average returns despite having higher valuation ratios, so profitability works as a quality dimension of value. Controlling for profitability strengthens the value premium. Gross profit is a cleaner measure of economic productivity than net income because it sits above discretionary spending lines.
-
----
 title: Do Stock Prices Fully Reflect Information in Accruals and Cash Flows about Future Earnings?
 author: Sloan
 year: 1996
@@ -71,15 +62,6 @@ school: value_quality
 PLACEHOLDER knowledge note. Mohanram's G-score applies a Piotroski-style signal set to growth stocks: profitability relative to industry, earnings and cash flow stability, and conservative accounting such as high research and advertising intensity. High G-score glamour stocks outperform low G-score ones, showing that fundamentals separate good from bad growth.
 
 ---
-title: Contrarian Investment, Extrapolation, and Risk
-author: Lakonishok, Shleifer and Vishny
-year: 1994
-doc_type: paper
-school: value_quality
----
-PLACEHOLDER knowledge note. Value strategies outperform because investors extrapolate past growth too far into the future, overpricing glamour stocks and underpricing value stocks. The value premium does not appear to be explained by higher fundamental risk: value stocks did not underperform in bad states. This supports mean reversion in growth expectations.
-
----
 title: The Cross-Section of Expected Stock Returns
 author: Fama and French
 year: 1992
@@ -87,4 +69,22 @@ doc_type: paper
 school: value_quality
 ---
 PLACEHOLDER knowledge note. Size and book-to-market together capture much of the cross-section of average returns, while market beta has little explanatory power on its own. Small firms and high book-to-market firms earn higher average returns. Fama and French interpret these as risk factors, while behavioural authors interpret them as mispricing.
+
+---
+title: Quality Minus Junk
+author: Asness, Frazzini and Pedersen
+year: 2019
+doc_type: paper
+school: value_quality
+---
+PLACEHOLDER knowledge note. Quality is defined as profitability, growth and safety (low beta, low leverage, low earnings volatility). High-quality stocks command higher prices, but not by enough: a quality-minus-junk factor long high-quality and short low-quality stocks earns significant risk-adjusted returns across 24 countries. Junk stocks are often lottery-like and overpriced.
+
+---
+title: The Detection of Earnings Manipulation
+author: Beneish
+year: 1999
+doc_type: paper
+school: value_quality
+---
+PLACEHOLDER knowledge note. The Beneish M-score combines eight ratios: days sales in receivables index, gross margin index, asset quality index, sales growth index, depreciation index, SG&A index, leverage index and total accruals to total assets. Manipulators show unusually high receivables growth, deteriorating margins, rising accruals and fast sales growth. A high M-score flags likely earnings manipulation, a key risk in small, thinly audited firms.
 

@@ -41,16 +41,7 @@ year: 2012
 doc_type: paper
 school: statistical
 ---
-PLACEHOLDER knowledge note. Intermediate-horizon past performance (12 to 7 months before formation) drives momentum profits more than recent performance (6 to 2 months). Momentum is therefore better described as an echo than as simple trend continuation.
-
----
-title: Betting Against Beta
-author: Frazzini and Pedersen
-year: 2014
-doc_type: paper
-school: statistical
----
-PLACEHOLDER knowledge note. Leverage-constrained investors bid up high-beta assets, so low-beta assets earn higher risk-adjusted returns. A betting-against-beta factor (long leveraged low beta, short high beta) earns significant positive returns across many markets. High beta is not rewarded as CAPM predicts.
+PLACEHOLDER knowledge note. Novy-Marx shows that momentum profits are driven mainly by intermediate-horizon past returns, from twelve to seven months before portfolio formation, rather than the most recent six months. Strategies based on returns from months 12-7 outperform those based on months 6-2 across US stocks, industries and international markets. Momentum therefore looks less like simple trend continuation and more like an echo, which challenges behavioural stories that rely on gradual diffusion of recent news.
 
 ---
 title: Fads, Martingales, and Market Efficiency
@@ -78,4 +69,13 @@ doc_type: paper
 school: statistical
 ---
 PLACEHOLDER knowledge note. An asset's own past 12-month excess return predicts its future return across futures markets: trends persist for about a year and partially reverse afterward. Time-series momentum performs well in extreme markets and is distinct from cross-sectional momentum.
+
+---
+title: Illiquidity and Stock Returns: Cross-Section and Time-Series Effects
+author: Amihud
+year: 2002
+doc_type: paper
+school: statistical
+---
+PLACEHOLDER knowledge note. The Amihud illiquidity measure, average absolute daily return divided by daily traded value, captures price impact. Illiquid stocks earn higher expected returns as compensation, and rising market illiquidity lowers contemporaneous prices. For small, low-priced stocks, liquidity both raises expected returns and raises the cost and risk of trading them.
 

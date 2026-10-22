@@ -5,7 +5,8 @@ from .store import embed, get_collection, scope_for
 
 SECONDARY_PENALTY = 1.15
 CONTRARIAN_BOOST = 0.9
-OVERFETCH = 3
+OVERFETCH = 10
+MAX_PER_SOURCE = 2  # long full texts must not crowd out the agent's other sources
 
 
 def _score(meta: dict, distance: float, agent: str) -> float:
@@ -36,7 +37,20 @@ def retrieve(agent: str, query: str, k: int = 5) -> list[dict]:
         for i, d, m, dist in zip(res["ids"][0], res["documents"][0], res["metadatas"][0], res["distances"][0])
     ]
     hits.sort(key=lambda h: h["score"])
-    return hits[:k]
+    return diversify(hits, k)
+
+
+def diversify(hits: list[dict], k: int, per_source: int = MAX_PER_SOURCE) -> list[dict]:
+    """Keep the best-scoring hits while allowing at most ``per_source`` chunks from one document."""
+    out, seen = [], {}
+    for h in hits:
+        key = (h["metadata"].get("author"), h["metadata"].get("year"), h["metadata"].get("title"))
+        if seen.get(key, 0) < per_source:
+            out.append(h)
+            seen[key] = seen.get(key, 0) + 1
+        if len(out) == k:
+            break
+    return out
 
 
 def citation(meta: dict) -> str:

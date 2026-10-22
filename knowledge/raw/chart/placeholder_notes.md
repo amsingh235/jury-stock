@@ -53,24 +53,6 @@ school: price_action
 PLACEHOLDER knowledge note. Moving-average crossover and trading-range-breakout rules on the Dow Jones index (1897-1986) produced buy signals followed by higher returns and lower volatility than sell signals. Bootstrapped null models could not reproduce these results. Later studies show the effect weakened after transaction costs and in later decades.
 
 ---
-title: Foundations of Technical Analysis
-author: Lo, Mamaysky and Wang
-year: 2000
-doc_type: paper
-school: price_action
----
-PLACEHOLDER knowledge note. Kernel regression is used to identify chart patterns algorithmically. Several patterns such as head and shoulders and double bottoms alter the conditional distribution of subsequent returns, providing modest incremental information, especially for NASDAQ stocks.
-
----
-title: Forecasting the Equity Risk Premium: The Role of Technical Indicators
-author: Neely, Rapach, Tu and Zhou
-year: 2014
-doc_type: paper
-school: price_action
----
-PLACEHOLDER knowledge note. Technical indicators (moving averages, momentum, volume) have out-of-sample predictive power for the aggregate equity premium comparable to macroeconomic variables. They capture different information: technicals detect declines near cyclical peaks while macro variables pick up recovery near troughs.
-
----
 title: New Concepts in Technical Trading Systems
 author: Wilder
 year: 1978
@@ -87,4 +69,49 @@ doc_type: notes
 school: price_action
 ---
 PLACEHOLDER knowledge note. Appel's MACD is the 12-period EMA minus the 26-period EMA with a 9-period signal line; crossovers and zero-line crosses indicate momentum change and divergences warn of weakening trends. Volume-price studies (Arditti 1967 and later literature) indicate that price moves on rising volume carry more information than moves on falling volume.
+
+---
+title: Candlestick Technical Trading Strategies: Can They Create Value for Investors?
+author: Marshall, Young and Rose
+year: 2006
+doc_type: paper
+school: price_action
+---
+PLACEHOLDER knowledge note. Testing single, double and triple candlestick reversal patterns on Dow Jones Industrial Average stocks (1992-2002) with bootstrap methods, the authors find candlestick signals have no useful predictive power once compared with random strategies. Candlesticks alone should not be trusted; any read needs confirmation from trend, support/resistance or volume.
+
+---
+title: Pattern Recognition and Candlestick Profitability in Taiwan
+author: Lu, Shiu and Liu
+year: 2012
+doc_type: paper
+school: price_action
+---
+PLACEHOLDER knowledge note. In the Taiwan stock market, some two-day bullish reversal patterns (such as bullish engulfing and bullish harami) remained profitable after transaction costs, while many other patterns did not. Candlestick predictive value appears market- and period-specific, stronger in emerging, retail-heavy markets, and decays as patterns become widely known.
+
+---
+title: The Predictive Power of Price Patterns
+author: Caginalp and Laurent
+year: 1998
+doc_type: paper
+school: price_action
+---
+PLACEHOLDER knowledge note. Testing eight three-day candlestick reversal patterns on S&P 500 stocks (1992-1996), the authors report statistically significant predictive power, with average returns after down-to-up reversal patterns materially above the baseline over a few days. The result supports candlesticks as short-horizon signals, though later studies found weaker evidence after costs.
+
+---
+title: A New Anomaly: The Cross-Sectional Profitability of Technical Analysis
+author: Han, Yang and Zhou
+year: 2013
+doc_type: paper
+school: price_action
+---
+PLACEHOLDER knowledge note. A simple moving-average timing strategy applied to portfolios sorted by volatility earns abnormal returns that rise with volatility, and the gains are largest for the most volatile, hardest-to-value stocks. Technical signals are most informative where information uncertainty is highest, a condition common among small, low-priced stocks.
+
+---
+title: Technical Analysis: An Asset Allocation Perspective on the Use of Moving Averages
+author: Zhu and Zhou
+year: 2009
+doc_type: paper
+school: price_action
+---
+PLACEHOLDER knowledge note. When returns are predictable and investors are uncertain about the predictive process, moving-average rules can add value to a fixed allocation rule. The benefit is greatest when the underlying process is persistent and the investor faces parameter uncertainty, giving a theoretical rationale for trend-following via moving averages.
 

@@ -7,13 +7,13 @@ from backend.scripts import build_kb, fetch_sources
 
 
 def test_manifest_entries_are_wellformed_and_replace_real_notes():
-    """Every entry names a known collection, an Author_Year_Title file, and an existing placeholder."""
+    """Every entry names a known collection, an Author_Year_Title file, and (until downloaded) an existing placeholder."""
     entries = yaml.safe_load(fetch_sources.MANIFEST.read_text(encoding="utf-8"))["sources"]
     for e in entries:
         assert (fetch_sources.RAW / e["collection"]).is_dir(), e
         assert build_kb.PDF_NAME.match(e["file"].rsplit(".", 1)[0]), e["file"]
         assert e["url"].startswith("https://") and e["verify"]
-        if "replaces" in e:
+        if "replaces" in e and not (fetch_sources.RAW / e["collection"] / e["file"]).exists():
             notes = (fetch_sources.RAW / e["collection"] / "placeholder_notes.md").read_text(encoding="utf-8")
             assert f"title: {e['replaces']}\n" in notes, e["replaces"]
 
@@ -45,3 +45,11 @@ def test_real_txt_loads_as_primary_source(tmp_path):
     p.write_text("Chapter I ...", encoding="utf-8")
     [(meta, body)] = build_kb.load_text_file(p, "contrarian")
     assert meta["author"] == "Lefevre" and meta["year"] == "1923" and meta["secondary_source"] is False
+
+
+def test_unreadable_scan_rejected_and_gutenberg_stripped():
+    """Garbled OCR fails the readability check; Gutenberg boilerplate is removed."""
+    garbled = {"file": "X_1993_Y.txt", "verify": ["arbitrage"]}
+    assert "unreadable" in fetch_sources.verify(garbled, b"arbitrage bLoAqcq 1!J91 cLGqu uo o cxcccq iwo bm.i.bpa")
+    book = "header *** START OF THE PROJECT GUTENBERG EBOOK X *** Chapter 1 text *** END OF THE PROJECT GUTENBERG EBOOK X *** licence"
+    assert build_kb.strip_gutenberg(book) == "Chapter 1 text"

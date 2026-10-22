@@ -81,11 +81,71 @@ sources:
     note: Odean's Berkeley page
   - collection: contrarian
     file: Lefevre_1923_Reminiscences_of_a_Stock_Operator.txt
-    url: https://www.gutenberg.org/ebooks/60979.txt.utf-8
+    url: https://www.gutenberg.org/cache/epub/60979/pg60979.txt
     verify: [reminiscences of a stock operator]
     note: "public domain (Project Gutenberg no. 60979), spec §13"
   - collection: contrarian
     file: Harper_1926_The_Psychology_of_Speculation.txt
-    url: https://www.gutenberg.org/ebooks/73647.txt.utf-8
+    url: https://www.gutenberg.org/cache/epub/73647/pg73647.txt
     verify: [psychology of speculation]
     note: "public domain (Project Gutenberg no. 73647). Spec §13 names Hoyle (1902); no free copy of Hoyle was found, so this is Harper's book of the same title."
+  - collection: fundamentals
+    file: Campbell_2008_In_Search_of_Distress_Risk.pdf
+    url: https://www.nber.org/system/files/working_papers/w12362/w12362.pdf
+    verify: [distress risk]
+    replaces: In Search of Distress Risk
+    note: NBER WP 12362
+  - collection: quant
+    file: Hou_2015_Digesting_Anomalies.pdf
+    url: https://www.nber.org/system/files/working_papers/w18435/w18435.pdf
+    verify: [anomalies]
+    replaces: "Digesting Anomalies: An Investment Approach"
+    note: NBER WP 18435
+  - collection: quant
+    file: Daniel_2016_Momentum_Crashes.pdf
+    url: https://www.nber.org/system/files/working_papers/w20439/w20439.pdf
+    verify: [momentum crashes]
+    replaces: Momentum Crashes
+    note: NBER WP 20439
+  - collection: quant
+    file: Ang_2006_Cross-Section_of_Volatility_and_Expected_Returns.pdf
+    url: https://www.nber.org/system/files/working_papers/w10852/w10852.pdf
+    verify: [volatility, expected returns]
+    replaces: The Cross-Section of Volatility and Expected Returns
+    note: NBER WP 10852
+  - collection: quant
+    file: Harvey_2016_and_the_Cross-Section_of_Expected_Returns.pdf
+    url: https://www.nber.org/system/files/working_papers/w20592/w20592.pdf
+    verify: [cross-section of expected returns]
+    replaces: "... and the Cross-Section of Expected Returns"
+    note: NBER WP 20592
+  - collection: sentiment
+    file: Baker_2006_Investor_Sentiment_and_the_Cross-Section.pdf
+    url: https://www.nber.org/system/files/working_papers/w10449/w10449.pdf
+    verify: [investor sentiment]
+    replaces: Investor Sentiment and the Cross-Section of Stock Returns
+    note: NBER WP 10449
+  - collection: news
+    file: Chan_1996_Momentum_Strategies.pdf
+    url: https://www.nber.org/system/files/working_papers/w5375/w5375.pdf
+    verify: [momentum strategies]
+    replaces: Momentum Strategies
+    note: NBER WP 5375
+  - collection: news
+    file: Cohen_2012_Decoding_Inside_Information.pdf
+    url: https://www.nber.org/system/files/working_papers/w16454/w16454.pdf
+    verify: [inside information]
+    replaces: Decoding Inside Information
+    note: NBER WP 16454
+  - collection: contrarian
+    file: Shleifer_1997_The_Limits_of_Arbitrage.pdf
+    url: https://www.nber.org/system/files/working_papers/w5167/w5167.pdf
+    verify: [limits of arbitrage]
+    replaces: The Limits of Arbitrage
+    note: NBER WP 5167
+  - collection: contrarian
+    file: Odean_1998_Are_Investors_Reluctant_to_Realize_Their_Losses.pdf
+    url: https://faculty.haas.berkeley.edu/odean/papers/disposition/disposit.pdf
+    verify: [realize]
+    replaces: Are Investors Reluctant to Realize Their Losses?
+    note: author's Berkeley page

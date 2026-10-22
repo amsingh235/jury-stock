@@ -57,3 +57,23 @@ def test_chunk_windows_overlap():
     tail = tok.encode(chunks[0], add_special_tokens=False)[-store.CHUNK_OVERLAP:]
     head = tok.encode(chunks[1], add_special_tokens=False)[:store.CHUNK_OVERLAP]
     assert tail == head
+
+
+def test_diversify_caps_chunks_per_source():
+    """No single document fills the result; other sources get through."""
+    from backend.app.kb.retriever import diversify
+
+    hits = [{"metadata": {"author": "Big", "year": "2015", "title": "T"}, "score": i / 10} for i in range(6)]
+    hits += [{"metadata": {"author": f"A{i}", "year": "2000", "title": f"S{i}"}, "score": 1 + i} for i in range(3)]
+    out = diversify(hits, 5)
+    assert sum(h["metadata"]["author"] == "Big" for h in out) == 2 and len(out) == 5
+
+
+def test_is_prose_drops_references_and_tables():
+    """Reference lists and number tables are filtered; normal prose is kept."""
+    prose = ("We find that the returns of stocks with high momentum are explained in part by the behaviour of "
+             "investors who are slow to react to news, and this is consistent with the evidence from the "
+             "earlier literature on underreaction in the market for equities and in other asset classes too.")
+    refs = " ".join(f"Smith, J., {1990 + i}. A study. Journal of Finance 4{i}, pp. 1-20." for i in range(8))
+    table = " ".join(f"{i}.{i}3 0.{i}1 (2.{i}4)" for i in range(60))
+    assert build_kb.is_prose(prose) and not build_kb.is_prose(refs) and not build_kb.is_prose(table)

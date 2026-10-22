@@ -25,26 +25,6 @@ WEIGHTS = yaml.safe_load((ROOT / "config" / "judge_weights.yaml").read_text(enco
 DISCLAIMER = WEIGHTS["disclaimer"]
 
 
-def preliminary_score(t: dict) -> tuple[float | None, str, list[str]]:
-    """Spec §6 formula on whatever agents finished (re-weighted); the real Judge arrives in M4."""
-    w = WEIGHTS["weights"]
-    total, used, missing = 0.0, 0.0, []
-    for key, weight in w.items():
-        rec = t["agents"].get(key, {})
-        if rec.get("status") != "DONE":
-            missing.append(key)
-            continue
-        o = rec["output"]
-        val = 100 - o["risk_score"] if key == "devils_advocate" else o["score"]
-        total += weight * val
-        used += weight
-    if not used:
-        return None, "n/a", missing
-    score = round(total / used, 1)
-    label = next(lv["label"] for lv in WEIGHTS["labels"] if score >= lv["min"])
-    return score, label, missing
-
-
 def _md_value(v, indent: int = 0) -> str:
     """Render a JSON value as Markdown bullets."""
     pad = "  " * indent
@@ -60,15 +40,57 @@ def _md_value(v, indent: int = 0) -> str:
 
 def report_markdown(t: dict) -> str:
     """Everything from one run as a readable Markdown report."""
-    score, label, missing = preliminary_score(t)
     inp = t["inputs"]
+    v = t["verdict"]
     lines = [
-        f"# JURY run: {t['symbol']} ({inp['info'].get('longName', '')})",
+        f"# JURY verdict: {t['symbol']} ({inp['info'].get('longName', '')})",
         f"Run at {t['run_at']} · {t['seconds']}s · LLM: {t.get('llm', '?')}",
         "",
-        f"## Preliminary score: {score} /100 · {label}",
-        "Spec §6 formula over the agents that finished; the deterministic Judge and its explanation come in M4."
-        + (f" Missing agents (weights re-normalised): {', '.join(missing)}." if missing else ""),
+        f"## {v['score']} /100 · {v['label']}",
+        f"Confidence: **{v['confidence']['level']}** ({v['confidence']['value']}: data completeness "
+        f"{v['confidence']['completeness']} x agent agreement {v['confidence']['agreement']}; "
+        f"Judge vs Chart Agent: {v['confidence']['chart_cross_check']})",
+        "",
+        "| Agent | Value | Weight |",
+        "|---|---|---|",
+        *[f"| {k} | {b['value']} | {b['weight']} |" for k, b in v["breakdown"].items()],
+        "",
+    ]
+    if v.get("missing_agents"):
+        lines += [f"Missing agents (weights re-normalised): {', '.join(v['missing_agents'])}", ""]
+    if v["status"] == "DONE":
+        e, cs = v["explainer"], v["explainer"]["chart_study"]
+        lines += [
+            "## The Judge's chart study",
+            *( [f"![chart](../charts/{Path(v['chart_image']).name})", ""] if v.get("chart_image") else [] ),
+            f"- **Trend:** {cs['trend_read']}",
+            f"- **Candlesticks:** {cs['candlestick_read']}",
+            f"- **Key levels:** {cs['key_levels']}",
+            f"- **Volume:** {cs['volume_read']}",
+            f"- **Chart bias:** {cs['chart_bias']} · agrees with Chart Agent: {cs['agrees_with_chart_agent']}",
+            *( [f"- **Notes:** {cs['notes']}"] if cs.get("notes") else [] ),
+            "",
+            "## Strongest arguments for",
+            *[f"{i}. {x}" for i, x in enumerate(e["pro_arguments"], 1)],
+            "",
+            "## Strongest arguments against",
+            *[f"{i}. {x}" for i, x in enumerate(e["con_arguments"], 1)],
+            "",
+            f"## Decisive factors\n{e['decisive_factors']}",
+            "",
+            f"## Where this analysis could be wrong\n{e['where_analysis_could_be_wrong']}",
+            "",
+            f"## Confidence reasons\n{e['confidence_reasons']}",
+            "",
+            f"Judge audit: unsourced numbers {v['grounding']['unsourced_numbers'] or 'none'}; "
+            f"unverified citations {v['grounding']['unverified_citations'] or 'none'}; "
+            f"One Rule redactions {v['one_rule_redactions'] or 'none'}",
+            "",
+        ]
+    else:
+        lines += [f"Judge explainer failed: {v.get('error')}. The score above stands; narrative unavailable.", ""]
+    lines += [
+        "# Deliberation transcript",
         "",
         "## Inputs at a glance",
         f"- Price {inp['chart'].get('indicators', {}).get('price')} · trend {inp['chart'].get('trend', {}).get('direction')} "
@@ -76,6 +98,8 @@ def report_markdown(t: dict) -> str:
         + (", ".join(f"{p['name']} ({p['status']})" for p in inp['chart'].get('patterns_found', [])) or "none"),
         f"- Factors: {json.dumps({k: v for k, v in inp['factors'].items() if k != 'data_gaps'})}",
         f"- Piotroski F-score {inp['piotroski'].get('score')}/{inp['piotroski'].get('available')}",
+        f"- Candlesticks (last 5 sessions): " + ("; ".join(f"{c['pattern']} {c['date']} after {c['prior_trend']} trend"
+                                                          for c in inp['chart'].get('candlesticks', [])) or "none"),
         f"- Headlines: {len(inp['headlines'])} · events: {len(inp['events'])} · catalysts: "
         + ("; ".join(f"{c['catalyst']} {c['date']} (in {c['days_until']}d)" for c in inp.get('catalysts', [])) or "none"),
         f"- Data gaps: {json.dumps(inp['gaps'])}",
@@ -103,8 +127,9 @@ def report_markdown(t: dict) -> str:
 
 def show(t: dict) -> None:
     """Print a short console summary of a run."""
-    score, label, missing = preliminary_score(t)
-    print(f"\n{'=' * 70}\n{t['symbol']}  ({t['seconds']}s, LLM {t.get('llm')})  preliminary {score}/100 {label}\n{'=' * 70}")
+    v = t["verdict"]
+    print(f"\n{'=' * 70}\n{t['symbol']}  ({t['seconds']}s, LLM {t.get('llm')})\n"
+          f"VERDICT {v['score']}/100 {v['label']}  confidence {v['confidence']['level']}\n{'=' * 70}")
     for key, rec in t["agents"].items():
         if rec["status"] != "DONE":
             print(f"  {key:16s} ERROR  {rec.get('error', '')[:120]}")
@@ -114,6 +139,12 @@ def show(t: dict) -> None:
         flags = len(rec["grounding"]["unsourced_numbers"]) + len(rec["grounding"]["unverified_citations"])
         print(f"  {key:16s} {'risk' if key == 'devils_advocate' else 'score'}={val:<3} conf={o['confidence']:<6} "
               f"audit_flags={flags} {rec['seconds']}s")
+    if v["status"] == "DONE":
+        cs = v["explainer"]["chart_study"]
+        print(f"  judge chart study: {cs['chart_bias']} (agrees with chart agent: {cs['agrees_with_chart_agent']})")
+        print(f"    candlesticks: {cs['candlestick_read'][:300]}")
+    else:
+        print(f"  judge: {v.get('error')}")
     print(f"\n{DISCLAIMER}")
 
 

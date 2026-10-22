@@ -8,40 +8,13 @@ school: nlp
 PLACEHOLDER knowledge note. Almost three quarters of words classified negative by the Harvard dictionary are not negative in financial contexts (e.g., liability, tax, cost). Loughran and McDonald build finance-specific word lists (negative, positive, uncertainty, litigious). Their negative list correlates with returns, volume and volatility around filings.
 
 ---
-title: FinBERT: Financial Sentiment Analysis with Pre-trained Language Models
-author: Araci
-year: 2019
-doc_type: paper
-school: nlp
----
-PLACEHOLDER knowledge note. FinBERT further pre-trains BERT on financial text and fine-tunes it on the Financial PhraseBank. It outperforms dictionary and earlier machine-learning methods on financial sentiment classification, even with small labelled datasets.
-
----
-title: Twitter Mood Predicts the Stock Market
-author: Bollen, Mao and Zeng
-year: 2011
-doc_type: paper
-school: nlp
----
-PLACEHOLDER knowledge note. Daily Twitter mood dimensions, particularly calm, were reported to Granger-cause Dow Jones movements with a lag of several days. The result has been widely criticised for small sample size and replication issues and should be treated with caution.
-
----
-title: Giving Content to Investor Sentiment: The Role of Media in the Stock Market
-author: Tetlock
-year: 2007
-doc_type: paper
-school: nlp
----
-PLACEHOLDER knowledge note. High pessimism in a Wall Street Journal column predicts downward pressure on market prices followed by reversion to fundamentals, consistent with temporary sentiment-driven mispricing. Unusually high or low pessimism also predicts high trading volume.
-
----
 title: Is All That Talk Just Noise? The Information Content of Internet Stock Message Boards
 author: Antweiler and Frank
 year: 2004
 doc_type: paper
 school: nlp
 ---
-PLACEHOLDER knowledge note. Message-board posting volume predicts volatility and trading volume. Bullishness has a statistically significant but economically small effect on returns. Disagreement among posters is associated with higher trading volume.
+PLACEHOLDER knowledge note. Antweiler and Frank analyse 1.5 million messages on Yahoo! Finance and Raging Bull about 45 large stocks in 2000, classifying bullishness with Naive Bayes text methods. Posting volume predicts next-day volatility and trading volume. Bullishness has a statistically significant but economically small effect on returns. Greater disagreement among posters is associated with higher trading volume. Online chatter signals attention and volatility far more reliably than direction.
 
 ---
 title: Frog in the Pan: Continuous Information and Momentum
@@ -50,7 +23,7 @@ year: 2014
 doc_type: paper
 school: nlp
 ---
-PLACEHOLDER knowledge note. Information that arrives continuously in small amounts generates stronger, more persistent momentum than information arriving in discrete jumps, because investors underreact to gradual news. Sentiment that shifts slowly can be more informative than sudden spikes.
+PLACEHOLDER knowledge note. Da, Gurun and Warachka measure information discreteness: whether a stock's past return came from a few large jumps or many small moves. Momentum is far stronger and more persistent when information arrives continuously in small amounts, because investors pay less attention to gradual changes, like a frog in slowly heating water. Discrete, attention-grabbing news is priced quickly. Slow, steady shifts in sentiment or fundamentals can therefore carry more predictive information than sudden spikes.
 
 ---
 title: In Search of Attention
@@ -68,7 +41,7 @@ year: 2015
 doc_type: paper
 school: nlp
 ---
-PLACEHOLDER knowledge note. A FEARS index built from household searches for economic worries predicts short-term return reversals, temporary increases in volatility and mutual fund flows out of equities. Extreme sentiment tends to be followed by reversal.
+PLACEHOLDER knowledge note. Da, Engelberg and Gao build the FEARS index from daily Google search volume for terms reflecting household economic worries, such as recession, unemployment and bankruptcy. Rising FEARS predicts lower same-day returns followed by reversal over the next few days, temporary increases in volatility, and mutual fund flows out of equities into bonds. The effects are stronger for stocks with high sentiment beta and limits to arbitrage. Extreme sentiment readings tend to be followed by reversal rather than continuation.
 
 ---
 title: News Momentum and Media Coverage
@@ -78,4 +51,40 @@ doc_type: paper
 school: nlp
 ---
 PLACEHOLDER knowledge note. Stocks with no media coverage earn higher returns than stocks with high coverage, consistent with an information-dissemination or neglect premium. Heavy coverage is linked to lower subsequent returns, particularly in small stocks with high retail ownership.
+
+---
+title: All That Glitters: The Effect of Attention and News on the Buying Behavior of Individual and Institutional Investors
+author: Barber and Odean
+year: 2008
+doc_type: paper
+school: nlp
+---
+PLACEHOLDER knowledge note. Individual investors are net buyers of attention-grabbing stocks: those in the news, with abnormally high trading volume or extreme one-day returns. Attention constrains which stocks they consider buying but matters less for selling, since they mostly sell what they own. Attention-driven buying can push prices temporarily above fundamentals.
+
+---
+title: Sentiment during Recessions
+author: Garcia
+year: 2013
+doc_type: paper
+school: nlp
+---
+PLACEHOLDER knowledge note. Using the fraction of positive and negative words in New York Times financial columns over 1905-2005, news sentiment predicts stock returns at daily frequency, and the predictability is concentrated in recessions. Media tone matters most when investors are anxious and uncertainty is high.
+
+---
+title: Investor Sentiment Aligned: A Powerful Predictor of Stock Returns
+author: Huang, Jiang, Tu and Zhou
+year: 2015
+doc_type: paper
+school: nlp
+---
+PLACEHOLDER knowledge note. Re-weighting the Baker-Wurgler proxies with partial least squares to strip common noise yields an aligned sentiment index with much stronger predictive power for aggregate market returns, in and out of sample. High sentiment predicts low future returns, consistent with sentiment-driven overpricing followed by reversal.
+
+---
+title: Wisdom of Crowds: The Value of Stock Opinions Transmitted Through Social Media
+author: Chen, De, Hu and Hwang
+year: 2014
+doc_type: paper
+school: nlp
+---
+PLACEHOLDER knowledge note. Views expressed in articles and commentaries on Seeking Alpha predict future stock returns and earnings surprises beyond analyst recommendations and news. The fraction of negative words in articles and comments predicts returns, suggesting peer-based social media can aggregate dispersed information, though quality varies by platform and contributor.
 

@@ -15,6 +15,8 @@ import numpy as np
 import pandas as pd
 import yaml
 
+from . import candlesticks
+
 STATS_PATH = Path(__file__).resolve().parents[3] / "config" / "bulkowski_stats.yaml"
 REQUIRED_COLS = ["Open", "High", "Low", "Close", "Volume"]
 MIN_BARS = 60
@@ -478,7 +480,8 @@ def analyze(df: pd.DataFrame) -> dict:
         "bars": len(df),
         "indicators": indicators,
         "trend": trend_structure(df, indicators["adx14"]),
-        "support_resistance": support_resistance(pivots, price, tol=max(float(a.iloc[-1]), price * 0.015)),
+        "support_resistance": (levels := support_resistance(pivots, price, tol=max(float(a.iloc[-1]), price * 0.015))),
+        "candlesticks": candlesticks.detect(df, levels, float(a.iloc[-1])),
         "volume": volume_confirmation(df),
         "patterns_found": detect_patterns(df, swings),
         "data_gaps": gaps,

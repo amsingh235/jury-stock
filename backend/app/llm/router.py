@@ -1,6 +1,7 @@
 """LLM router: JSON-only completions with retry, schema validation and provider fallback."""
 from __future__ import annotations
 
+import base64
 import json
 import os
 import re
@@ -51,13 +52,15 @@ class Provider:
 
     name: str
     model: str
-    call: Callable[[str, str], str]
+    call: Callable[..., str]
 
 
-def _groq_call(cfg: dict, p: dict, key: str) -> Callable[[str, str], str]:
+def _groq_call(cfg: dict, p: dict, key: str) -> Callable[..., str]:
     """Build a Groq (OpenAI-compatible) caller in JSON mode."""
-    def call(system: str, user: str) -> str:
-        """POST one chat completion to Groq and return the message text."""
+    def call(system: str, user: str, image: Path | None = None) -> str:
+        """POST one chat completion to Groq and return the message text (text-only: images are skipped)."""
+        if image:
+            user += "\n\n(The chart image could not be shown to this model; work from the chart engine data.)"
         r = httpx.post(p["url"], timeout=cfg["timeout_s"], headers={"Authorization": f"Bearer {key}"}, json={
             "model": p["model"], "temperature": cfg["temperature"], "max_tokens": cfg["max_output_tokens"],
             "response_format": {"type": "json_object"},
@@ -68,14 +71,18 @@ def _groq_call(cfg: dict, p: dict, key: str) -> Callable[[str, str], str]:
     return call
 
 
-def _gemini_call(cfg: dict, p: dict, key: str) -> Callable[[str, str], str]:
+def _gemini_call(cfg: dict, p: dict, key: str) -> Callable[..., str]:
     """Build a Gemini generateContent caller in JSON mode."""
-    def call(system: str, user: str) -> str:
-        """POST one generateContent request to Gemini and return the text."""
+    def call(system: str, user: str, image: Path | None = None) -> str:
+        """POST one generateContent request to Gemini (with the chart PNG inline if given) and return the text."""
+        parts = [{"text": user}]
+        if image:
+            parts.append({"inline_data": {"mime_type": "image/png",
+                                          "data": base64.b64encode(Path(image).read_bytes()).decode()}})
         r = httpx.post(p["url"].format(model=p["model"]), timeout=cfg["timeout_s"],
                        headers={"x-goog-api-key": key}, json={
             "systemInstruction": {"parts": [{"text": system}]},
-            "contents": [{"role": "user", "parts": [{"text": user}]}],
+            "contents": [{"role": "user", "parts": parts}],
             "generationConfig": {"temperature": cfg["temperature"], "maxOutputTokens": cfg["max_output_tokens"],
                                  "responseMimeType": "application/json"},
         })
@@ -84,7 +91,7 @@ def _gemini_call(cfg: dict, p: dict, key: str) -> Callable[[str, str], str]:
     return call
 
 
-def claude_cli_call(model: str = "opus", timeout_s: int = 300) -> Callable[[str, str], str]:
+def claude_cli_call(model: str = "opus", timeout_s: int = 300) -> Callable[..., str]:
     """Build a caller that runs one headless Claude Code turn on the user's Claude subscription.
 
     Tools and MCP servers are disabled, so the model can only answer; the user prompt goes
@@ -94,12 +101,21 @@ def claude_cli_call(model: str = "opus", timeout_s: int = 300) -> Callable[[str,
     if not exe:
         raise LLMError("Claude Code CLI not found: install it and run `claude` once to log in")
 
-    def call(system: str, user: str) -> str:
-        """Run `claude -p` and return the reply text."""
+    def call(system: str, user: str, image: Path | None = None) -> str:
+        """Run `claude -p` and return the reply text.
+
+        With ``image``, the only tool enabled is Read, run from the image's folder, so the model
+        can open the chart PNG and nothing else.
+        """
+        tools, cwd = "", None
+        if image:
+            image = Path(image).resolve()
+            tools, cwd = "Read", str(image.parent)
+            user += f"\n\nCHART IMAGE: open {image} with the Read tool and study it before answering."
         proc = subprocess.run(
-            [exe, "-p", "--model", model, "--output-format", "json", "--tools", "",
+            [exe, "-p", "--model", model, "--output-format", "json", "--tools", tools,
              "--system-prompt", system, "--no-session-persistence", "--strict-mcp-config"],
-            input=user, capture_output=True, text=True, encoding="utf-8", timeout=timeout_s,
+            input=user, capture_output=True, text=True, encoding="utf-8", timeout=timeout_s, cwd=cwd,
         )
         try:
             out = json.loads(proc.stdout)
@@ -143,15 +159,20 @@ class Router:
             raise LLMError("No LLM API keys set: add GROQ_API_KEY and/or GEMINI_API_KEY to .env")
         return cls(providers, retries=cfg["retries_per_provider"])
 
-    def complete(self, system: str, user: str, schema: type[BaseModel]) -> tuple[dict, str]:
-        """Return (validated JSON dict, provider name); raise LLMError if all providers fail."""
+    def complete(self, system: str, user: str, schema: type[BaseModel],
+                 image: Path | None = None) -> tuple[dict, str]:
+        """Return (validated JSON dict, provider name); raise LLMError if all providers fail.
+
+        ``image`` (a chart PNG) is passed to providers that can see images.
+        """
         errors = []
         for prov in self.providers:
             prompt = user
             for attempt in range(self.retries):
                 t0 = time.time()
                 try:
-                    data = schema.model_validate(extract_json(prov.call(system, prompt))).model_dump()
+                    reply = prov.call(system, prompt, image) if image else prov.call(system, prompt)
+                    data = schema.model_validate(extract_json(reply)).model_dump()
                     self.log.append({"provider": prov.name, "ok": True, "s": round(time.time() - t0, 2)})
                     return data, prov.name
                 except (ValidationError, json.JSONDecodeError) as e:

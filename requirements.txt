@@ -2,3 +2,10 @@ chromadb
 sentence-transformers
 pypdf
 pytest
+yfinance
+pandas
+numpy
+httpx
+pyyaml
+pydantic
+mplfinance
